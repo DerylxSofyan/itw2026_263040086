@@ -4,23 +4,47 @@
 <head>
   <meta charset="UTF-8">
   <title>CSS Simple Selectors</title>
-</head>
-
-<style>
-    .hightlight {
-        background-color: yellow;
-        font-weight: bold;
+  <style>
+    /* UNIVERSAL SELECTOR */
+    * {
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
+    /* TYPE SELECTOR (Nama Tag) */
+    h3 {
+      color: navy;
+    }
+
+    /* CLASS SELECTOR */
+    .highlight {
+      background-color: khaki;
+      font-weight: bold;
+    }
+
+    /* ID SELECTOR */
     #heading {
-        color: red;
-        background-color: lightblue;
+      color: white;
+      background-color: crimson;
+      text-align: center;
+    }
 
+    /* GROUPING SELECTOR */
+    i,
+    span {
+      color: gray;
     }
-    i {
-        color: green;
+
+    /* ATTRIBUTE SELECTOR */
+    input[type="text"] {
+      border: 2px solid blue;
     }
-</style>
+
+    a[href] {
+      color: green;
+    }
+  </style>
+</head>
 
 <body>
 
