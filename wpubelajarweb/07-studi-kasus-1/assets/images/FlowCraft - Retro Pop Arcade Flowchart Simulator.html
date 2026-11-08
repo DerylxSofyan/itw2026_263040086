@@ -1,0 +1,2531 @@
+<!DOCTYPE html>
+<!-- saved from url=(0078)file:///C:/Users/deryl/Downloads/flowcraft_game_algoritma_flowchart%20(4).html -->
+<html lang="id"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlowCraft - Retro Pop Arcade Flowchart Simulator</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="./FlowCraft - Retro Pop Arcade Flowchart Simulator_files/saved_resource"></script>
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="./FlowCraft - Retro Pop Arcade Flowchart Simulator_files/all.min.css">
+  <!-- Google Fonts: Press Start 2P, VT323 & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+  <link href="./FlowCraft - Retro Pop Arcade Flowchart Simulator_files/css2" rel="stylesheet">
+  <!-- Canvas Confetti CDN -->
+  <script src="./FlowCraft - Retro Pop Arcade Flowchart Simulator_files/confetti.browser.min.js.download"></script>
+  <!-- html2canvas and jsPDF for Classic Certificate Generation -->
+  <script src="./FlowCraft - Retro Pop Arcade Flowchart Simulator_files/html2canvas.min.js.download"></script>
+  <script src="./FlowCraft - Retro Pop Arcade Flowchart Simulator_files/jspdf.umd.min.js.download"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            pixel: ['"Press Start 2P"', 'monospace'],
+            crt: ['"VT323"', 'monospace'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+            serifClassic: ['"Cinzel"', 'serif'],
+            serifDeco: ['"Cinzel Decorative"', 'serif'],
+            calligraphy: ['"Great Vibes"', 'cursive'],
+            bodyClassic: ['"Libre Baskerville"', 'serif'],
+          },
+          colors: {
+            arcade: {
+              cream: '#faf7ee',
+              paper: '#f3eedb',
+              yellow: '#ffdf00',
+              cyan: '#00d2ff',
+              pink: '#ff4b8b',
+              green: '#20e365',
+              purple: '#9d4edd',
+              orange: '#ff8800',
+              ink: '#1e1b18',
+            },
+            unpas: {
+              gold: '#c59b27',
+              goldLight: '#f3d97b',
+              goldDark: '#8a6809',
+            }
+          },
+          boxShadow: {
+            'pixel-sm': '2px 2px 0px #1e1b18',
+            'pixel': '4px 4px 0px #1e1b18',
+            'pixel-lg': '6px 6px 0px #1e1b18',
+            'pixel-card': '5px 5px 0px #1e1b18',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Dot Grid Canvas Arcade Terang Vintage */
+    .bright-arcade-grid {
+      background-color: #faf7ee;
+      background-image: 
+        radial-gradient(#d5ccb0 1.5px, transparent 1.5px),
+        linear-gradient(to right, rgba(230, 220, 190, 0.25) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(230, 220, 190, 0.25) 1px, transparent 1px);
+      background-size: 20px 20px, 40px 40px, 40px 40px;
+    }
+
+    /* Chunky Retro Parallelogram I/O Shapes */
+    .shape-io-parallelogram {
+      transform: skew(-12deg);
+    }
+    .shape-io-content {
+      transform: skew(12deg);
+    }
+
+    /* Arcade Hard Push Button */
+    .arcade-btn {
+      transition: transform 0.05s ease, box-shadow 0.05s ease;
+    }
+    .arcade-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px #1e1b18 !important;
+    }
+
+    /* Node Active Pulse Arcade Retro */
+    .node-executing {
+      outline: 4px solid #ff4b8b !important;
+      box-shadow: 6px 6px 0px #ff4b8b, 0 0 15px rgba(255, 75, 139, 0.6) !important;
+      transform: scale(1.03) !important;
+      z-index: 40 !important;
+      animation: arcadeBlink 0.6s steps(2, start) infinite;
+    }
+
+    @keyframes arcadeBlink {
+      0%, 100% { filter: brightness(1.15); }
+      50% { filter: brightness(0.95); }
+    }
+
+    /* Retro Pixel Equalizer */
+    .retro-eq-bar {
+      width: 4px;
+      background: #1e1b18;
+      border: 1px solid #ffdf00;
+      animation: retroEq 0.4s steps(4, jump-none) infinite alternate;
+    }
+    .retro-eq-bar:nth-child(1) { height: 6px; animation-delay: 0.1s; }
+    .retro-eq-bar:nth-child(2) { height: 14px; animation-delay: 0.25s; }
+    .retro-eq-bar:nth-child(3) { height: 8px; animation-delay: 0.15s; }
+    .retro-eq-bar:nth-child(4) { height: 12px; animation-delay: 0.3s; }
+
+    @keyframes retroEq {
+      0% { height: 4px; }
+      100% { height: 15px; }
+    }
+
+    /* Classic Certificate Border & Guilloche Ornaments */
+    .cert-frame-outer {
+      border: 8px double #8a6809;
+      outline: 2px solid #2a2212;
+      outline-offset: -12px;
+      box-shadow: inset 0 0 40px rgba(181, 147, 51, 0.15);
+    }
+    .cert-corner-ornament {
+      position: absolute;
+      width: 48px;
+      height: 48px;
+      border: 2px solid #8a6809;
+    }
+    .cert-corner-tl { top: 16px; left: 16px; border-right: none; border-bottom: none; }
+    .cert-corner-tr { top: 16px; right: 16px; border-left: none; border-bottom: none; }
+    .cert-corner-bl { bottom: 16px; left: 16px; border-right: none; border-top: none; }
+    .cert-corner-br { bottom: 16px; right: 16px; border-left: none; border-top: none; }
+
+    /* Scrollbar Retro Berwarna Terang */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f3eedb;
+      border: 1px solid #1e1b18;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #ffdf00;
+      border: 2px solid #1e1b18;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #ff8800;
+    }
+  </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:"JetBrains Mono", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.pointer-events-auto{pointer-events:auto}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.left-4{left:1rem}.right-3{right:0.75rem}.right-4{right:1rem}.top-3{top:0.75rem}.-bottom-1{bottom:-0.25rem}.left-1\/2{left:50%}.left-1\/4{left:25%}.right-1\/4{right:25%}.top-0{top:0px}.z-10{z-index:10}.z-20{z-index:20}.z-30{z-index:30}.z-50{z-index:50}.col-span-1{grid-column:span 1 / span 1}.col-span-2{grid-column:span 2 / span 2}.mx-4{margin-left:1rem;margin-right:1rem}.mx-auto{margin-left:auto;margin-right:auto}.my-0\.5{margin-top:0.125rem;margin-bottom:0.125rem}.my-1{margin-top:0.25rem;margin-bottom:0.25rem}.my-1\.5{margin-top:0.375rem;margin-bottom:0.375rem}.my-auto{margin-top:auto;margin-bottom:auto}.mb-1{margin-bottom:0.25rem}.mb-1\.5{margin-bottom:0.375rem}.mb-2{margin-bottom:0.5rem}.mb-2\.5{margin-bottom:0.625rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.ml-1{margin-left:0.25rem}.mr-1{margin-right:0.25rem}.mr-1\.5{margin-right:0.375rem}.mt-0\.5{margin-top:0.125rem}.mt-1{margin-top:0.25rem}.mt-1\.5{margin-top:0.375rem}.mt-2{margin-top:0.5rem}.mt-2\.5{margin-top:0.625rem}.mt-3{margin-top:0.75rem}.box-border{box-sizing:border-box}.line-clamp-3{overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3}.block{display:block}.inline-block{display:inline-block}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.hidden{display:none}.h-screen{height:100vh}.h-0\.5{height:0.125rem}.h-10{height:2.5rem}.h-14{height:3.5rem}.h-16{height:4rem}.h-2{height:0.5rem}.h-2\.5{height:0.625rem}.h-20{height:5rem}.h-3{height:0.75rem}.h-48{height:12rem}.h-6{height:1.5rem}.h-7{height:1.75rem}.h-8{height:2rem}.h-\[1\.5px\]{height:1.5px}.h-\[595px\]{height:595px}.h-auto{height:auto}.h-px{height:1px}.h-0{height:0px}.h-4{height:1rem}.max-h-12{max-height:3rem}.max-h-16{max-height:4rem}.max-h-20{max-height:5rem}.max-h-\[95vh\]{max-height:95vh}.min-h-\[595px\]{min-height:595px}.min-h-\[760px\]{min-height:760px}.min-h-\[90px\]{min-height:90px}.w-10{width:2.5rem}.w-12{width:3rem}.w-14{width:3.5rem}.w-16{width:4rem}.w-2{width:0.5rem}.w-2\.5{width:0.625rem}.w-20{width:5rem}.w-36{width:9rem}.w-48{width:12rem}.w-52{width:13rem}.w-56{width:14rem}.w-6{width:1.5rem}.w-7{width:1.75rem}.w-72{width:18rem}.w-8{width:2rem}.w-80{width:20rem}.w-9{width:2.25rem}.w-\[842px\]{width:842px}.w-auto{width:auto}.w-full{width:100%}.w-0{width:0px}.w-0\.5{width:0.125rem}.min-w-\[700px\]{min-width:700px}.min-w-\[842px\]{min-width:842px}.min-w-\[170px\]{min-width:170px}.max-w-3xl{max-width:48rem}.max-w-4xl{max-width:56rem}.max-w-\[160px\]{max-width:160px}.max-w-\[190px\]{max-width:190px}.max-w-\[620px\]{max-width:620px}.max-w-\[700px\]{max-width:700px}.max-w-full{max-width:100%}.max-w-lg{max-width:32rem}.max-w-md{max-width:28rem}.max-w-sm{max-width:24rem}.max-w-\[210px\]{max-width:210px}.max-w-\[90px\]{max-width:90px}.max-w-\[220px\]{max-width:220px}.max-w-\[340px\]{max-width:340px}.flex-1{flex:1 1 0%}.border-collapse{border-collapse:collapse}.origin-top{transform-origin:top}.-translate-x-1\/2{--tw-translate-x:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.-rotate-45{--tw-rotate:-45deg;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.rotate-45{--tw-rotate:45deg;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.scale-125{--tw-scale-x:1.25;--tw-scale-y:1.25;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.transform{transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}.cursor-grab{cursor:grab}.cursor-pointer{cursor:pointer}.select-none{-webkit-user-select:none;user-select:none}.list-disc{list-style-type:disc}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.flex-col{flex-direction:column}.items-start{align-items:flex-start}.items-end{align-items:flex-end}.items-center{align-items:center}.justify-end{justify-content:flex-end}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-0\.5{gap:0.125rem}.gap-1{gap:0.25rem}.gap-1\.5{gap:0.375rem}.gap-2{gap:0.5rem}.gap-2\.5{gap:0.625rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.space-y-1 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.25rem * var(--tw-space-y-reverse))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-2\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.625rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.625rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.divide-arcade-ink\/20 > :not([hidden]) ~ :not([hidden]){border-color:rgb(30 27 24 / 0.2)}.overflow-auto{overflow:auto}.overflow-hidden{overflow:hidden}.overflow-y-auto{overflow-y:auto}.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rounded-full{border-radius:9999px}.rounded-none{border-radius:0px}.border{border-width:1px}.border-2{border-width:2px}.border-4{border-width:4px}.border-b-2{border-bottom-width:2px}.border-b-4{border-bottom-width:4px}.border-l-4{border-left-width:4px}.border-r-4{border-right-width:4px}.border-t-2{border-top-width:2px}.border-l-\[4px\]{border-left-width:4px}.border-r-\[4px\]{border-right-width:4px}.border-t-\[5px\]{border-top-width:5px}.border-dashed{border-style:dashed}.border-\[\#574106\]{--tw-border-opacity:1;border-color:rgb(87 65 6 / var(--tw-border-opacity, 1))}.border-\[\#8a6809\]{--tw-border-opacity:1;border-color:rgb(138 104 9 / var(--tw-border-opacity, 1))}.border-arcade-green{--tw-border-opacity:1;border-color:rgb(32 227 101 / var(--tw-border-opacity, 1))}.border-arcade-green\/40{border-color:rgb(32 227 101 / 0.4)}.border-arcade-ink{--tw-border-opacity:1;border-color:rgb(30 27 24 / var(--tw-border-opacity, 1))}.border-arcade-ink\/30{border-color:rgb(30 27 24 / 0.3)}.border-arcade-yellow{--tw-border-opacity:1;border-color:rgb(255 223 0 / var(--tw-border-opacity, 1))}.border-arcade-yellow\/60{border-color:rgb(255 223 0 / 0.6)}.border-black{--tw-border-opacity:1;border-color:rgb(0 0 0 / var(--tw-border-opacity, 1))}.border-l-transparent{border-left-color:transparent}.border-r-transparent{border-right-color:transparent}.border-t-arcade-ink{--tw-border-opacity:1;border-top-color:rgb(30 27 24 / var(--tw-border-opacity, 1))}.bg-arcade-cream{--tw-bg-opacity:1;background-color:rgb(250 247 238 / var(--tw-bg-opacity, 1))}.bg-\[\#141b18\]{--tw-bg-opacity:1;background-color:rgb(20 27 24 / var(--tw-bg-opacity, 1))}.bg-\[\#8a6809\]{--tw-bg-opacity:1;background-color:rgb(138 104 9 / var(--tw-bg-opacity, 1))}.bg-\[\#8a6809\]\/40{background-color:rgb(138 104 9 / 0.4)}.bg-\[\#8a6809\]\/60{background-color:rgb(138 104 9 / 0.6)}.bg-\[\#faf6eb\]{--tw-bg-opacity:1;background-color:rgb(250 246 235 / var(--tw-bg-opacity, 1))}.bg-arcade-cyan{--tw-bg-opacity:1;background-color:rgb(0 210 255 / var(--tw-bg-opacity, 1))}.bg-arcade-green{--tw-bg-opacity:1;background-color:rgb(32 227 101 / var(--tw-bg-opacity, 1))}.bg-arcade-green\/40{background-color:rgb(32 227 101 / 0.4)}.bg-arcade-paper{--tw-bg-opacity:1;background-color:rgb(243 238 219 / var(--tw-bg-opacity, 1))}.bg-arcade-pink{--tw-bg-opacity:1;background-color:rgb(255 75 139 / var(--tw-bg-opacity, 1))}.bg-arcade-purple{--tw-bg-opacity:1;background-color:rgb(157 78 221 / var(--tw-bg-opacity, 1))}.bg-arcade-yellow{--tw-bg-opacity:1;background-color:rgb(255 223 0 / var(--tw-bg-opacity, 1))}.bg-black\/60{background-color:rgb(0 0 0 / 0.6)}.bg-black\/70{background-color:rgb(0 0 0 / 0.7)}.bg-black\/80{background-color:rgb(0 0 0 / 0.8)}.bg-black\/90{background-color:rgb(0 0 0 / 0.9)}.bg-slate-200\/90{background-color:rgb(226 232 240 / 0.9)}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-transparent{background-color:transparent}.bg-unpas-gold{--tw-bg-opacity:1;background-color:rgb(197 155 39 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-arcade-ink{--tw-bg-opacity:1;background-color:rgb(30 27 24 / var(--tw-bg-opacity, 1))}.bg-emerald-50{--tw-bg-opacity:1;background-color:rgb(236 253 245 / var(--tw-bg-opacity, 1))}.bg-rose-50{--tw-bg-opacity:1;background-color:rgb(255 241 242 / var(--tw-bg-opacity, 1))}.bg-emerald-400{--tw-bg-opacity:1;background-color:rgb(52 211 153 / var(--tw-bg-opacity, 1))}.bg-gradient-to-br{background-image:linear-gradient(to bottom right, var(--tw-gradient-stops))}.from-\[\#f5df93\]{--tw-gradient-from:#f5df93 var(--tw-gradient-from-position);--tw-gradient-to:rgb(245 223 147 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.via-\[\#d4af37\]{--tw-gradient-to:rgb(212 175 55 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), #d4af37 var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-\[\#8a6809\]{--tw-gradient-to:#8a6809 var(--tw-gradient-to-position)}.object-contain{object-fit:contain}.p-1{padding:0.25rem}.p-10{padding:2.5rem}.p-2{padding:0.5rem}.p-2\.5{padding:0.625rem}.p-3{padding:0.75rem}.p-3\.5{padding:0.875rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-8{padding:2rem}.px-1{padding-left:0.25rem;padding-right:0.25rem}.px-1\.5{padding-left:0.375rem;padding-right:0.375rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-3\.5{padding-left:0.875rem;padding-right:0.875rem}.px-4{padding-left:1rem;padding-right:1rem}.px-8{padding-left:2rem;padding-right:2rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.pb-1\.5{padding-bottom:0.375rem}.pb-2{padding-bottom:0.5rem}.pl-5{padding-left:1.25rem}.pt-1{padding-top:0.25rem}.pt-16{padding-top:4rem}.pt-2{padding-top:0.5rem}.pt-2\.5{padding-top:0.625rem}.text-left{text-align:left}.text-center{text-align:center}.text-justify{text-align:justify}.font-mono{font-family:"JetBrains Mono", monospace}.font-bodyClassic{font-family:"Libre Baskerville", serif}.font-calligraphy{font-family:"Great Vibes", cursive}.font-crt{font-family:"VT323", monospace}.font-pixel{font-family:"Press Start 2P", monospace}.font-serifClassic{font-family:"Cinzel", serif}.font-serifDeco{font-family:"Cinzel Decorative", serif}.text-2xl{font-size:1.5rem;line-height:2rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-\[6px\]{font-size:6px}.text-\[7px\]{font-size:7px}.text-\[8px\]{font-size:8px}.text-\[9px\]{font-size:9px}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-black{font-weight:900}.font-bold{font-weight:700}.font-extrabold{font-weight:800}.font-normal{font-weight:400}.uppercase{text-transform:uppercase}.italic{font-style:italic}.leading-none{line-height:1}.leading-relaxed{line-height:1.625}.leading-snug{line-height:1.375}.leading-tight{line-height:1.25}.tracking-\[0\.18em\]{letter-spacing:0.18em}.tracking-\[0\.25em\]{letter-spacing:0.25em}.tracking-\[0\.2em\]{letter-spacing:0.2em}.tracking-wide{letter-spacing:0.025em}.tracking-wider{letter-spacing:0.05em}.tracking-widest{letter-spacing:0.1em}.text-arcade-ink{--tw-text-opacity:1;color:rgb(30 27 24 / var(--tw-text-opacity, 1))}.text-\[\#1f190e\]{--tw-text-opacity:1;color:rgb(31 25 14 / var(--tw-text-opacity, 1))}.text-\[\#2c2002\]{--tw-text-opacity:1;color:rgb(44 32 2 / var(--tw-text-opacity, 1))}.text-\[\#2c2416\]{--tw-text-opacity:1;color:rgb(44 36 22 / var(--tw-text-opacity, 1))}.text-\[\#3f341d\]{--tw-text-opacity:1;color:rgb(63 52 29 / var(--tw-text-opacity, 1))}.text-\[\#443305\]{--tw-text-opacity:1;color:rgb(68 51 5 / var(--tw-text-opacity, 1))}.text-\[\#44381e\]{--tw-text-opacity:1;color:rgb(68 56 30 / var(--tw-text-opacity, 1))}.text-\[\#554728\]{--tw-text-opacity:1;color:rgb(85 71 40 / var(--tw-text-opacity, 1))}.text-\[\#6b551c\]{--tw-text-opacity:1;color:rgb(107 85 28 / var(--tw-text-opacity, 1))}.text-\[\#705b2a\]{--tw-text-opacity:1;color:rgb(112 91 42 / var(--tw-text-opacity, 1))}.text-amber-500{--tw-text-opacity:1;color:rgb(245 158 11 / var(--tw-text-opacity, 1))}.text-arcade-cyan{--tw-text-opacity:1;color:rgb(0 210 255 / var(--tw-text-opacity, 1))}.text-arcade-green{--tw-text-opacity:1;color:rgb(32 227 101 / var(--tw-text-opacity, 1))}.text-arcade-green\/60{color:rgb(32 227 101 / 0.6)}.text-arcade-ink\/40{color:rgb(30 27 24 / 0.4)}.text-arcade-ink\/60{color:rgb(30 27 24 / 0.6)}.text-arcade-ink\/70{color:rgb(30 27 24 / 0.7)}.text-arcade-ink\/80{color:rgb(30 27 24 / 0.8)}.text-arcade-orange{--tw-text-opacity:1;color:rgb(255 136 0 / var(--tw-text-opacity, 1))}.text-arcade-pink{--tw-text-opacity:1;color:rgb(255 75 139 / var(--tw-text-opacity, 1))}.text-arcade-yellow{--tw-text-opacity:1;color:rgb(255 223 0 / var(--tw-text-opacity, 1))}.text-unpas-gold{--tw-text-opacity:1;color:rgb(197 155 39 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.text-slate-900{--tw-text-opacity:1;color:rgb(15 23 42 / var(--tw-text-opacity, 1))}.text-arcade-purple{--tw-text-opacity:1;color:rgb(157 78 221 / var(--tw-text-opacity, 1))}.text-emerald-600{--tw-text-opacity:1;color:rgb(5 150 105 / var(--tw-text-opacity, 1))}.text-emerald-900{--tw-text-opacity:1;color:rgb(6 78 59 / var(--tw-text-opacity, 1))}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.placeholder-slate-400::placeholder{--tw-placeholder-opacity:1;color:rgb(148 163 184 / var(--tw-placeholder-opacity, 1))}.accent-arcade-pink{accent-color:#ff4b8b}.opacity-0{opacity:0}.mix-blend-multiply{mix-blend-mode:multiply}.shadow-md{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-pixel{--tw-shadow:4px 4px 0px #1e1b18;--tw-shadow-colored:4px 4px 0px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-pixel-lg{--tw-shadow:6px 6px 0px #1e1b18;--tw-shadow-colored:6px 6px 0px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-pixel-sm{--tw-shadow:2px 2px 0px #1e1b18;--tw-shadow-colored:2px 2px 0px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.contrast-125{--tw-contrast:contrast(1.25);filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.backdrop-blur-sm{--tw-backdrop-blur:blur(4px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition{transition-property:color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-100{transition-duration:100ms}.duration-150{transition-duration:150ms}.duration-200{transition-duration:200ms}.hover\:-translate-y-0\.5:hover{--tw-translate-y:-0.125rem;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.hover\:scale-110:hover{--tw-scale-x:1.1;--tw-scale-y:1.1;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.hover\:bg-arcade-pink:hover{--tw-bg-opacity:1;background-color:rgb(255 75 139 / var(--tw-bg-opacity, 1))}.hover\:bg-arcade-yellow:hover{--tw-bg-opacity:1;background-color:rgb(255 223 0 / var(--tw-bg-opacity, 1))}.hover\:bg-cyan-50:hover{--tw-bg-opacity:1;background-color:rgb(236 254 255 / var(--tw-bg-opacity, 1))}.hover\:bg-emerald-300:hover{--tw-bg-opacity:1;background-color:rgb(110 231 183 / var(--tw-bg-opacity, 1))}.hover\:bg-green-50:hover{--tw-bg-opacity:1;background-color:rgb(240 253 244 / var(--tw-bg-opacity, 1))}.hover\:bg-purple-50:hover{--tw-bg-opacity:1;background-color:rgb(250 245 255 / var(--tw-bg-opacity, 1))}.hover\:bg-rose-400:hover{--tw-bg-opacity:1;background-color:rgb(251 113 133 / var(--tw-bg-opacity, 1))}.hover\:bg-rose-50:hover{--tw-bg-opacity:1;background-color:rgb(255 241 242 / var(--tw-bg-opacity, 1))}.hover\:bg-sky-300:hover{--tw-bg-opacity:1;background-color:rgb(125 211 252 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-100:hover{--tw-bg-opacity:1;background-color:rgb(241 245 249 / var(--tw-bg-opacity, 1))}.hover\:bg-yellow-300:hover{--tw-bg-opacity:1;background-color:rgb(253 224 71 / var(--tw-bg-opacity, 1))}.hover\:bg-yellow-400:hover{--tw-bg-opacity:1;background-color:rgb(250 204 21 / var(--tw-bg-opacity, 1))}.hover\:bg-yellow-50:hover{--tw-bg-opacity:1;background-color:rgb(254 252 232 / var(--tw-bg-opacity, 1))}.hover\:bg-white:hover{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.hover\:bg-white\/60:hover{background-color:rgb(255 255 255 / 0.6)}.hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.hover\:shadow-pixel:hover{--tw-shadow:4px 4px 0px #1e1b18;--tw-shadow-colored:4px 4px 0px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.hover\:shadow-pixel-lg:hover{--tw-shadow:6px 6px 0px #1e1b18;--tw-shadow-colored:6px 6px 0px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.focus\:border-arcade-yellow:focus{--tw-border-opacity:1;border-color:rgb(255 223 0 / var(--tw-border-opacity, 1))}.focus\:border-arcade-cyan:focus{--tw-border-opacity:1;border-color:rgb(0 210 255 / var(--tw-border-opacity, 1))}.focus\:border-arcade-purple:focus{--tw-border-opacity:1;border-color:rgb(157 78 221 / var(--tw-border-opacity, 1))}.focus\:border-arcade-pink:focus{--tw-border-opacity:1;border-color:rgb(255 75 139 / var(--tw-border-opacity, 1))}.focus\:border-emerald-500:focus{--tw-border-opacity:1;border-color:rgb(16 185 129 / var(--tw-border-opacity, 1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.active\:cursor-grabbing:active{cursor:grabbing}.disabled\:pointer-events-none:disabled{pointer-events:none}.disabled\:opacity-40:disabled{opacity:0.4}.group:hover .group-hover\:text-amber-700{--tw-text-opacity:1;color:rgb(180 83 9 / var(--tw-text-opacity, 1))}.group:hover .group-hover\:text-cyan-700{--tw-text-opacity:1;color:rgb(14 116 144 / var(--tw-text-opacity, 1))}.group:hover .group-hover\:text-green-700{--tw-text-opacity:1;color:rgb(21 128 61 / var(--tw-text-opacity, 1))}.group:hover .group-hover\:text-purple-700{--tw-text-opacity:1;color:rgb(126 34 206 / var(--tw-text-opacity, 1))}.group:hover .group-hover\:text-rose-700{--tw-text-opacity:1;color:rgb(190 18 60 / var(--tw-text-opacity, 1))}@media (min-width: 640px){.sm\:inline{display:inline}.sm\:w-48{width:12rem}.sm\:p-6{padding:1.5rem}.sm\:text-center{text-align:center}.sm\:text-5xl{font-size:3rem;line-height:1}}@media (min-width: 768px){.md\:inline{display:inline}.md\:w-80{width:20rem}.md\:w-96{width:24rem}.md\:max-w-\[280px\]{max-width:280px}.md\:gap-5{gap:1.25rem}.md\:text-sm{font-size:0.875rem;line-height:1.25rem}}@media (min-width: 1024px){.lg\:inline-block{display:inline-block}.lg\:flex{display:flex}}</style></head>
+<body class="bg-arcade-cream text-arcade-ink font-mono antialiased h-screen flex flex-col overflow-hidden select-none">
+
+  <!-- ==================== TOP NAVIGATION HEADER RETRO ARCADE TERANG ==================== -->
+  <header class="bg-arcade-yellow border-b-4 border-arcade-ink px-4 py-2.5 flex items-center justify-between shadow-pixel z-30 relative">
+    
+    <!-- Brand Title & Kampus Identity -->
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 bg-arcade-pink border-2 border-arcade-ink shadow-pixel-sm flex items-center justify-center text-white text-lg">
+        <i class="fa-solid fa-gamepad text-arcade-yellow text-base"></i>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="font-pixel text-arcade-ink text-xs md:text-sm tracking-wider font-extrabold uppercase">FLOWCRAFT</span>
+          <span class="bg-arcade-cyan text-arcade-ink border-2 border-arcade-ink text-[9px] font-pixel px-1.5 py-0.5 shadow-pixel-sm uppercase font-bold">ARCADE</span>
+        </div>
+        <p class="font-crt text-base text-arcade-ink/80 leading-none font-bold">ALGORITMA • TEKNIK INFORMATIKA UNPAS</p>
+      </div>
+    </div>
+
+    <!-- Center: Interaktif Level Navigator Arcade -->
+    <div class="flex items-center gap-2">
+      <div class="flex items-center bg-white rounded-none border-2 border-arcade-ink p-1 shadow-pixel-sm">
+        <button id="prevCaseBtn" class="arcade-btn w-7 h-7 bg-arcade-cream text-arcade-ink border-2 border-arcade-ink hover:bg-arcade-yellow flex items-center justify-center text-xs font-bold transition disabled:opacity-40 disabled:pointer-events-none" title="Kasus Sebelumnya">
+          <i class="fa-solid fa-chevron-left text-[10px]"></i>
+        </button>
+
+        <div class="px-2 flex items-center gap-1.5">
+          <span class="w-2.5 h-2.5 bg-arcade-green border border-arcade-ink inline-block animate-pulse"></span>
+          <select id="caseSelector" class="bg-transparent font-pixel text-[10px] text-arcade-ink focus:outline-none cursor-pointer max-w-[190px] md:max-w-[280px] truncate py-1"><option value="0" class="bg-white text-slate-900 font-pixel">1. Hello World</option><option value="1" class="bg-white text-slate-900 font-pixel">2. Input Sapaan</option><option value="2" class="bg-white text-slate-900 font-pixel">3. Hitung Variabel</option><option value="3" class="bg-white text-slate-900 font-pixel">4. Seleksi Nilai (If-Else)</option><option value="4" class="bg-white text-slate-900 font-pixel">5. Deret Loop (1 s.d 5)</option><option value="5" class="bg-white text-slate-900 font-pixel">6. Autentikasi Login (Nested If)</option><option value="6" class="bg-white text-slate-900 font-pixel">7. Predikat Huruf (Multi-If)</option><option value="7" class="bg-white text-slate-900 font-pixel">8. Matriks Grid (Nested Loop)</option><option value="8" class="bg-white text-slate-900 font-pixel">9. Validasi PIN ATM (3x Salah)</option><option value="9" class="bg-white text-slate-900 font-pixel">★ Free Mode (Sandbox)</option></select>
+        </div>
+
+        <button id="nextCaseBtn" class="arcade-btn w-7 h-7 bg-arcade-cream text-arcade-ink border-2 border-arcade-ink hover:bg-arcade-yellow flex items-center justify-center text-xs font-bold transition disabled:opacity-40 disabled:pointer-events-none" title="Kasus Selanjutnya">
+          <i class="fa-solid fa-chevron-right text-[10px]"></i>
+        </button>
+      </div>
+
+      <!-- Panduan Button (Hint) Arcade -->
+      <button id="openHintBtn" class="arcade-btn flex items-center gap-1.5 px-3 py-1.5 bg-arcade-cyan hover:bg-sky-300 text-arcade-ink border-2 border-arcade-ink font-pixel text-[9px] shadow-pixel-sm transition">
+        <i class="fa-solid fa-lightbulb text-arcade-ink text-xs"></i>
+        <span class="hidden sm:inline">HINT</span>
+      </button>
+
+      <!-- Reset Canvas Button Arcade -->
+      <button id="resetDiagramBtn" class="arcade-btn flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-100 text-arcade-ink border-2 border-arcade-ink font-pixel text-[9px] shadow-pixel-sm transition">
+        <i class="fa-solid fa-rotate-left text-xs"></i>
+        <span class="hidden sm:inline">RESET</span>
+      </button>
+
+      <!-- Progress Badge Arcade -->
+      <div class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 bg-arcade-green border-2 border-arcade-ink text-[9px] font-pixel text-arcade-ink shadow-pixel-sm">
+        <i class="fa-solid fa-trophy text-arcade-ink text-xs"></i>
+        <span id="overallProgressText">9/9 MISI</span>
+      </div>
+
+      <!-- Tombol Sertifikat (Tampil/Aktif Saat Selesai) -->
+      <button id="navOpenCertBtn" class="arcade-btn items-center gap-1.5 px-3 py-1.5 bg-unpas-gold hover:bg-yellow-400 text-arcade-ink border-2 border-arcade-ink font-pixel text-[9px] shadow-pixel-sm transition flex" title="Lihat Sertifikat Kelulusan">
+        <i class="fa-solid fa-certificate text-white text-xs"></i>
+        <span>SERTIFIKAT</span>
+      </button>
+    </div>
+
+    <!-- Right Controls: Audio & Kredit Kampus Arcade -->
+    <div class="flex items-center gap-2">
+      <!-- Audio Toggle Button Retro -->
+      <div class="flex items-center bg-white border-2 border-arcade-ink p-1 gap-1.5 shadow-pixel-sm">
+        <button id="audioToggleBtn" class="arcade-btn flex items-center gap-1.5 px-2.5 py-1 bg-arcade-cream hover:bg-arcade-yellow text-arcade-ink border border-arcade-ink font-pixel text-[9px] transition">
+          <i class="fa-solid fa-music text-arcade-ink text-xs"></i>
+          <span id="audioBtnLabel" class="hidden md:inline">8-BIT BGM</span>
+          <div id="equalizerVisualizer" class="hidden items-end gap-0.5 h-3 ml-1">
+            <div class="retro-eq-bar"></div>
+            <div class="retro-eq-bar"></div>
+            <div class="retro-eq-bar"></div>
+            <div class="retro-eq-bar"></div>
+          </div>
+        </button>
+        <input type="range" id="audioVolume" min="0" max="1" step="0.05" value="0.35" class="w-12 accent-arcade-pink cursor-pointer hidden lg:inline-block" title="Volume Musik">
+      </div>
+
+      <!-- Tombol Kredit Logo Asli UNPAS Arcade -->
+      <button id="openCreditsBtn" class="arcade-btn flex items-center gap-1.5 px-3 py-1.5 bg-arcade-pink hover:bg-rose-400 text-white font-pixel text-[9px] border-2 border-arcade-ink shadow-pixel-sm transition">
+        <i class="fa-solid fa-award text-arcade-yellow"></i>
+        <span>CREDIT</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN 3-COLUMN WORKSPACE RETRO ARCADE TERANG ==================== -->
+  <div class="flex-1 flex overflow-hidden">
+    
+    <!-- ==================== KOLOM KIRI: DESKRIPSI KASUS & PALET SIMBOL ==================== -->
+    <aside class="w-72 md:w-80 bg-arcade-paper border-r-4 border-arcade-ink flex flex-col shadow-pixel z-20 overflow-hidden">
+      
+      <!-- Kartu Misi Aktif Arcade -->
+      <div class="p-3.5 border-b-2 border-arcade-ink bg-white">
+        <div class="flex items-center justify-between mb-1.5">
+          <span id="badgeCaseNum" class="text-[9px] font-pixel text-arcade-ink bg-arcade-yellow px-2 py-0.5 border-2 border-arcade-ink shadow-pixel-sm uppercase font-extrabold">STAGE 9</span>
+          <div id="starRatingContainer" class="flex text-amber-500 text-xs gap-1"><i class="fa-solid fa-star text-amber-500"></i><i class="fa-solid fa-star text-amber-500"></i><i class="fa-solid fa-star text-amber-500"></i></div>
+        </div>
+        <h2 id="activeCaseTitle" class="font-pixel text-xs text-arcade-ink leading-tight mb-1 truncate">Stage 9: Validasi PIN ATM (Loop &amp; Counter Percobaan)</h2>
+        <p id="activeCaseDesc" class="font-crt text-base text-arcade-ink/80 leading-snug line-clamp-3">Sistem meminta input PIN (PIN benar: 1234). Percobaan dibatasi 3 kali. Jika PIN benar, cetak 'Selamat Datang'. Jika salah 3 kali, cetak 'Rekening Diblokir'.</p>
+        
+        <div class="mt-2.5 pt-2 border-t-2 border-dashed border-arcade-ink/30 flex items-center justify-between">
+          <span class="text-arcade-ink/70 font-pixel text-[8px]">TARGET:</span>
+          <span id="targetExpectedText" class="font-mono text-xs font-bold text-arcade-ink bg-arcade-green/40 px-2 py-0.5 border border-arcade-ink truncate max-w-[160px]">"Selamat Datang" / "Rekening Diblokir"</span>
+        </div>
+      </div>
+
+      <!-- Header Palet Simbol Arcade -->
+      <div class="px-3.5 py-2 border-b-2 border-arcade-ink bg-arcade-yellow flex items-center justify-between">
+        <span class="text-[10px] font-pixel text-arcade-ink flex items-center gap-1.5 uppercase">
+          <i class="fa-solid fa-cubes text-arcade-ink"></i> TOOLBOX
+        </span>
+        <span class="font-crt text-sm text-arcade-ink/80 font-bold">[DRAG / CLICK]</span>
+      </div>
+
+      <!-- Daftar Simbol Flowchart Arcade Terang & Pop -->
+      <div class="p-3 space-y-2 flex-1 overflow-y-auto bg-arcade-paper">
+        
+        <!-- Output Node (Cyan Pop) -->
+        <div class="palette-draggable arcade-btn group p-2.5 bg-white hover:bg-cyan-50 border-2 border-arcade-ink shadow-pixel-sm hover:shadow-pixel cursor-grab active:cursor-grabbing transition flex items-center gap-2.5" draggable="true" data-type="output">
+          <div class="w-9 h-7 bg-arcade-cyan border-2 border-arcade-ink text-arcade-ink flex items-center justify-center shape-io-parallelogram text-xs font-bold shadow-pixel-sm">
+            <span class="shape-io-content"><i class="fa-solid fa-terminal text-[11px]"></i></span>
+          </div>
+          <div>
+            <div class="font-pixel text-[9px] text-arcade-ink group-hover:text-cyan-700 transition">OUTPUT</div>
+            <div class="font-crt text-sm text-arcade-ink/80 leading-none">Cetak teks ke terminal</div>
+          </div>
+        </div>
+
+        <!-- Input Node (Purple Pop) -->
+        <div class="palette-draggable arcade-btn group p-2.5 bg-white hover:bg-purple-50 border-2 border-arcade-ink shadow-pixel-sm hover:shadow-pixel cursor-grab active:cursor-grabbing transition flex items-center gap-2.5" draggable="true" data-type="input">
+          <div class="w-9 h-7 bg-arcade-purple border-2 border-arcade-ink text-white flex items-center justify-center shape-io-parallelogram text-xs font-bold shadow-pixel-sm">
+            <span class="shape-io-content"><i class="fa-solid fa-keyboard text-[11px]"></i></span>
+          </div>
+          <div>
+            <div class="font-pixel text-[9px] text-arcade-ink group-hover:text-purple-700 transition">INPUT</div>
+            <div class="font-crt text-sm text-arcade-ink/80 leading-none">Minta masukan pemain</div>
+          </div>
+        </div>
+
+        <!-- Process / Assign Node (Yellow Coin Pop) -->
+        <div class="palette-draggable arcade-btn group p-2.5 bg-white hover:bg-yellow-50 border-2 border-arcade-ink shadow-pixel-sm hover:shadow-pixel cursor-grab active:cursor-grabbing transition flex items-center gap-2.5" draggable="true" data-type="process">
+          <div class="w-9 h-7 bg-arcade-yellow border-2 border-arcade-ink text-arcade-ink flex items-center justify-center text-xs font-bold shadow-pixel-sm">
+            <i class="fa-solid fa-calculator text-[11px]"></i>
+          </div>
+          <div>
+            <div class="font-pixel text-[9px] text-arcade-ink group-hover:text-amber-700 transition">PROCESS / ASSIGN</div>
+            <div class="font-crt text-sm text-arcade-ink/80 leading-none">Hitung variabel RAM</div>
+          </div>
+        </div>
+
+        <!-- Decision Node (Pink Coral Pop) -->
+        <div class="palette-draggable arcade-btn group p-2.5 bg-white hover:bg-rose-50 border-2 border-arcade-ink shadow-pixel-sm hover:shadow-pixel cursor-grab active:cursor-grabbing transition flex items-center gap-2.5" draggable="true" data-type="if">
+          <div class="w-7 h-7 bg-arcade-pink border-2 border-arcade-ink text-white flex items-center justify-center rotate-45 text-xs font-bold shadow-pixel-sm ml-1 mr-1">
+            <span class="-rotate-45"><i class="fa-solid fa-code-branch text-[10px]"></i></span>
+          </div>
+          <div>
+            <div class="font-pixel text-[9px] text-arcade-ink group-hover:text-rose-700 transition">DECISION (IF-ELSE)</div>
+            <div class="font-crt text-sm text-arcade-ink/80 leading-none">Percabangan kondisi logika</div>
+          </div>
+        </div>
+
+        <!-- Loop Node (Green 1P Pop) -->
+        <div class="palette-draggable arcade-btn group p-2.5 bg-white hover:bg-green-50 border-2 border-arcade-ink shadow-pixel-sm hover:shadow-pixel cursor-grab active:cursor-grabbing transition flex items-center gap-2.5" draggable="true" data-type="while">
+          <div class="w-9 h-7 bg-arcade-green border-2 border-arcade-ink text-arcade-ink flex items-center justify-center text-xs font-bold shadow-pixel-sm">
+            <i class="fa-solid fa-repeat text-[11px]"></i>
+          </div>
+          <div>
+            <div class="font-pixel text-[9px] text-arcade-ink group-hover:text-green-700 transition">WHILE LOOP</div>
+            <div class="font-crt text-sm text-arcade-ink/80 leading-none">Ulangi selama True</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer Info Kampus Arcade -->
+      <div class="p-2.5 bg-white border-t-2 border-arcade-ink flex items-center justify-center gap-2">
+        <span class="w-2.5 h-2.5 bg-arcade-yellow border border-arcade-ink inline-block"></span>
+        <span class="font-pixel text-[8px] text-arcade-ink tracking-wider uppercase">
+          IF UNPAS • 1982-2026
+        </span>
+      </div>
+    </aside>
+
+    <!-- ==================== KOLOM TENGAH: KANVAS FLOWCHART ARCADE TERANG ==================== -->
+    <main class="flex-1 relative flex flex-col overflow-hidden bg-arcade-cream">
+      
+      <!-- Canvas Toolbar Arcade (Zoom & Status) -->
+      <div class="absolute top-3 left-4 right-4 flex items-center justify-between pointer-events-none z-10">
+        <div class="pointer-events-auto bg-white border-2 border-arcade-ink px-3 py-1 shadow-pixel-sm flex items-center gap-2 text-xs text-arcade-ink">
+          <span class="w-2 h-2 bg-arcade-green border border-arcade-ink"></span>
+          <span class="font-pixel text-[9px] uppercase font-bold">STAGE WORKSPACE</span>
+          <span class="text-arcade-ink/40">|</span>
+          <span class="font-crt text-sm text-arcade-ink/80 font-bold">KLIK BLOK UNTUK EDIT</span>
+        </div>
+
+        <div class="pointer-events-auto flex items-center gap-1 bg-white p-1 border-2 border-arcade-ink shadow-pixel-sm">
+          <button id="zoomOutBtn" class="arcade-btn w-6 h-6 bg-arcade-cream hover:bg-arcade-yellow border border-arcade-ink text-arcade-ink flex items-center justify-center transition" title="Perkecil">
+            <i class="fa-solid fa-minus text-[10px]"></i>
+          </button>
+          <span id="zoomPercent" class="font-pixel text-[8px] text-arcade-ink px-2">100%</span>
+          <button id="zoomInBtn" class="arcade-btn w-6 h-6 bg-arcade-cream hover:bg-arcade-yellow border border-arcade-ink text-arcade-ink flex items-center justify-center transition" title="Perbesar">
+            <i class="fa-solid fa-plus text-[10px]"></i>
+          </button>
+          <button id="zoomResetBtn" class="arcade-btn w-6 h-6 bg-arcade-cream hover:bg-arcade-yellow border border-arcade-ink text-arcade-ink flex items-center justify-center transition" title="Reset Zoom">
+            <i class="fa-solid fa-arrows-to-dot text-[10px]"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Scrollable Dot-Grid Container Arcade -->
+      <div id="canvasViewport" class="flex-1 overflow-auto p-6 pt-16 flex justify-center items-start">
+        <div id="canvasTransformWrapper" class="bright-arcade-grid min-w-[700px] w-full max-w-3xl min-h-[760px] p-8 border-4 border-arcade-ink shadow-pixel-lg flex flex-col items-center origin-top transition-transform duration-100">
+          <div id="flowchartTreeRoot" class="flex flex-col items-center w-full"><div class="relative flex flex-col items-center group/item transition-all duration-100" id="chart-node-start">
+            <div class="px-6 py-2 bg-arcade-green border-3 border-arcade-ink text-arcade-ink font-pixel text-[10px] tracking-wider shadow-pixel flex items-center gap-2 uppercase font-extrabold">
+              <i class="fa-solid fa-play text-[9px]"></i>
+              <span>START</span>
+            </div>
+          </div><div class="flex flex-col items-center my-0.5 group/slot relative">
+        <div class="w-0.5 h-4 bg-arcade-ink relative flex items-center justify-center">
+          <div class="absolute -bottom-1 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[5px] border-t-arcade-ink"></div>
+        </div>
+
+        <button class="drop-plus-btn arcade-btn w-6 h-6 bg-arcade-yellow border-2 border-arcade-ink text-arcade-ink flex items-center justify-center text-xs font-bold shadow-pixel-sm hover:bg-white hover:scale-110 transition my-0.5 z-10" title="Sisipkan Blok di Sini">
+          <i class="fa-solid fa-plus text-[10px]"></i>
+        </button>
+
+        <div class="w-0.5 h-2.5 bg-arcade-ink"></div>
+      </div><div class="relative flex flex-col items-center group/item transition-all duration-100" id="chart-node-nd_340">
+            <div class="cursor-pointer px-5 py-2.5 bg-arcade-yellow border-3 border-arcade-ink text-arcade-ink font-mono text-xs shadow-pixel hover:shadow-pixel-lg transition transform hover:-translate-y-0.5 flex items-center gap-2.5">
+              <div class="w-6 h-6 bg-white border border-arcade-ink text-arcade-ink flex items-center justify-center text-xs shadow-pixel-sm">
+                <i class="fa-solid fa-calculator"></i>
+              </div>
+              <div class="flex flex-col items-start">
+                <span class="font-pixel text-[8px] text-arcade-ink uppercase">PROCESS</span>
+                <span class="font-mono text-xs text-arcade-ink font-bold max-w-[220px] truncate">
+                  salah = 0
+                </span>
+              </div>
+            </div>
+          </div><div class="flex flex-col items-center my-0.5 group/slot relative">
+        <div class="w-0.5 h-4 bg-arcade-ink relative flex items-center justify-center">
+          <div class="absolute -bottom-1 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[5px] border-t-arcade-ink"></div>
+        </div>
+
+        <button class="drop-plus-btn arcade-btn w-6 h-6 bg-arcade-yellow border-2 border-arcade-ink text-arcade-ink flex items-center justify-center text-xs font-bold shadow-pixel-sm hover:bg-white hover:scale-110 transition my-0.5 z-10" title="Sisipkan Blok di Sini">
+          <i class="fa-solid fa-plus text-[10px]"></i>
+        </button>
+
+        <div class="w-0.5 h-2.5 bg-arcade-ink"></div>
+      </div><div class="relative flex flex-col items-center group/item transition-all duration-100" id="chart-node-nd_341">
+            <div class="cursor-pointer px-5 py-2.5 bg-arcade-yellow border-3 border-arcade-ink text-arcade-ink font-mono text-xs shadow-pixel hover:shadow-pixel-lg transition transform hover:-translate-y-0.5 flex items-center gap-2.5">
+              <div class="w-6 h-6 bg-white border border-arcade-ink text-arcade-ink flex items-center justify-center text-xs shadow-pixel-sm">
+                <i class="fa-solid fa-calculator"></i>
+              </div>
+              <div class="flex flex-col items-start">
+                <span class="font-pixel text-[8px] text-arcade-ink uppercase">PROCESS</span>
+                <span class="font-mono text-xs text-arcade-ink font-bold max-w-[220px] truncate">
+                  berhasil = 0
+                </span>
+              </div>
+            </div>
+          </div><div class="flex flex-col items-center my-0.5 group/slot relative">
+        <div class="w-0.5 h-4 bg-arcade-ink relative flex items-center justify-center">
+          <div class="absolute -bottom-1 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[5px] border-t-arcade-ink"></div>
+        </div>
+
+        <button class="drop-plus-btn arcade-btn w-6 h-6 bg-arcade-yellow border-2 border-arcade-ink text-arcade-ink flex items-center justify-center text-xs font-bold shadow-pixel-sm hover:bg-white hover:scale-110 transition my-0.5 z-10" title="Sisipkan Blok di Sini">
+          <i class="fa-solid fa-plus text-[10px]"></i>
+        </button>
+
+        <div class="w-0.5 h-2.5 bg-arcade-ink"></div>
+      </div><div class="relative flex flex-col items-center group/item transition-all duration-100" id="chart-node-nd_342">
+            <div class="flex flex-col items-center w-full">
+              <div class="cursor-pointer px-5 py-2 bg-emerald-400 border-3 border-arcade-ink text-arcade-ink font-mono text-xs shadow-pixel hover:shadow-pixel-lg transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                <div class="w-6 h-6 bg-white border border-arcade-ink text-arcade-ink flex items-center justify-center text-xs shadow-pixel-sm">
+                  <i class="fa-solid fa-repeat"></i>
+                </div>
+                <div class="flex flex-col items-start">
+                  <span class="font-pixel text-[8px] text-emerald-900 uppercase font-bold">WHILE LOOP</span>
+                  <span class="font-mono text-xs text-arcade-ink font-bold max-w-[190px] truncate">(salah &lt; 3) &amp;&amp; (berhasil == 0)</span>
+                </div>
+              </div>
+
+              <!-- Loop Body Container Arcade -->
+              <div class="w-full max-w-[340px] mt-2.5 p-2.5 bg-emerald-50 border-3 border-dashed border-arcade-ink flex flex-col items-center shadow-pixel-sm">
+                <span class="font-pixel text-[8px] text-arcade-ink mb-2 flex items-center gap-1 uppercase font-bold">
+                  <i class="fa-solid fa-arrows-spin text-emerald-600"></i> LOOP BODY
+                </span>
+                <div class="w-full flex flex-col items-center" id="slot-loop-nd_342"><div class="relative flex flex-col items-center group/item transition-all duration-100" id="chart-node-nd_343">
+            <div class="cursor-pointer px-5 py-2.5 bg-arcade-purple border-3 border-arcade-ink text-white font-mono text-xs shadow-pixel hover:shadow-pixel-lg transition transform hover:-translate-y-0.5 shape-io-parallelogram">
+              <div class="shape-io-content flex items-center gap-2">
+                <span class="font-pixel text-[8px] bg-white text-arcade-purple px-1 py-0.5 font-bold">IN</span>
+                <span class="font-mono text-xs text-white font-bold max-w-[210px] truncate">pin</span>
+              </div>
+            </div>
+          </div><div class="flex flex-col items-center my-0.5 group/slot relative">
+        <div class="w-0.5 h-4 bg-arcade-ink relative flex items-center justify-center">
+          <div class="absolute -bottom-1 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[5px] border-t-arcade-ink"></div>
+        </div>
+
+        <button class="drop-plus-btn arcade-btn w-6 h-6 bg-arcade-yellow border-2 border-arcade-ink text-arcade-ink flex items-center justify-center text-xs font-bold shadow-pixel-sm hover:bg-white hover:scale-110 transition my-0.5 z-10" title="Sisipkan Blok di Sini">
+          <i class="fa-solid fa-plus text-[10px]"></i>
+        </button>
+
+        <div class="w-0.5 h-2.5 bg-arcade-ink"></div>
+      </div><div class="relative flex flex-col items-center group/item transition-all duration-100" id="chart-node-nd_344">
+            <div class="flex flex-col items-center">
+              <div class="cursor-pointer px-5 py-2 bg-arcade-pink border-3 border-arcade-ink text-white font-mono text-xs shadow-pixel hover:shadow-pixel-lg transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                <div class="w-6 h-6 bg-white border border-arcade-ink text-arcade-pink flex items-center justify-center text-xs shadow-pixel-sm">
+                  <i class="fa-solid fa-code-branch"></i>
+                </div>
+                <div class="flex flex-col items-start">
+                  <span class="font-pixel text-[8px] text-arcade-yellow uppercase font-bold">IF BRANCH</span>
+                  <span class="font-mono text-xs text-white font-bold max-w-[190px] truncate">pin == 1234</span>
+                </div>
+              </div>
+
+              <!-- Percabangan True & False Arcade Terang -->
+              <div class="flex gap-4 md:gap-5 mt-3 w-full justify-center relative pt-2.5">
+                <div class="absolute top-0 left-1/4 right-1/4 h-2 border-t-3 border-arcade-ink"></div>
+                <div class="absolute top-0 left-1/2 w-0.5 h-2 bg-arcade-ink -translate-x-1/2"></div>
+
+                <!-- True Branch (Emerald Pop) -->
+                <div class="flex flex-col items-center min-w-[170px] p-2.5 bg-emerald-50 border-2 border-arcade-ink shadow-pixel-sm">
+                  <span class="font-pixel text-[8px] bg-arcade-green text-arcade-ink px-2 py-0.5 border border-arcade-ink mb-2 shadow-pixel-sm uppercase font-bold">TRUE (YA)</span>
+                  <div class="branch-true w-full flex flex-col items-center" id="slot-true-nd_344"><div class="relative flex flex-col items-center group/item transition-all duration-100" id="chart-node-nd_345">
+            <div class="cursor-pointer px-5 py-2.5 bg-arcade-cyan border-3 border-arcade-ink text-arcade-ink font-mono text-xs shadow-pixel hover:shadow-pixel-lg transition transform hover:-translate-y-0.5 shape-io-parallelogram">
+              <div class="shape-io-content flex items-center gap-2">
+                <span class="font-pixel text-[8px] bg-arcade-ink text-arcade-cyan px-1 py-0.5">OUT</span>
+                <span class="font-mono text-xs text-arcade-ink font-bold max-w-[210px] truncate">"Selamat Datang"</span>
+              </div>
+            </div>
+          </div><div class="flex flex-col items-center my-0.5 group/slot relative">
+        <div class="w-0.5 h-4 bg-arcade-ink relative flex items-center justify-center">
+          <div class="absolute -bottom-1 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[5px] border-t-arcade-ink"></div>
+        </div>
+
+        <button class="drop-plus-btn arcade-btn w-6 h-6 bg-arcade-yellow border-2 border-arcade-ink text-arcade-ink flex items-center justify-center text-xs font-bold shadow-pixel-sm hover:bg-white hover:scale-110 transition my-0.5 z-10" title="Sisipkan Blok di Sini">
+          <i class="fa-solid fa-plus text-[10px]"></i>
+        </button>
+
+        <div class="w-0.5 h-2.5 bg-arcade-ink"></div>
+      </div><div class="relative flex flex-col items-center group/item transition-all duration-100" id="chart-node-nd_346">
+            <div class="cursor-pointer px-5 py-2.5 bg-arcade-yellow border-3 border-arcade-ink text-arcade-ink font-mono text-xs shadow-pixel hover:shadow-pixel-lg transition transform hover:-translate-y-0.5 flex items-center gap-2.5">
+              <div class="w-6 h-6 bg-white border border-arcade-ink text-arcade-ink flex items-center justify-center text-xs shadow-pixel-sm">
+                <i class="fa-solid fa-calculator"></i>
+              </div>
+              <div class="flex flex-col items-start">
+                <span class="font-pixel text-[8px] text-arcade-ink uppercase">PROCESS</span>
+                <span class="font-mono text-xs text-arcade-ink font-bold max-w-[220px] truncate">
+                  berhasil = 1
+                </span>
+              </div>
+            </div>
+          </div><div class="flex flex-col items-center my-0.5 group/slot relative">
+        <div class="w-0.5 h-4 bg-arcade-ink relative flex items-center justify-center">
+          <div class="absolute -bottom-1 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[5px] border-t-arcade-ink"></div>
+        </div>
+
+        <button class="drop-plus-btn arcade-btn w-6 h-6 bg-arcade-yellow border-2 border-arcade-ink text-arcade-ink flex items-center justify-center text-xs font-bold shadow-pixel-sm hover:bg-white hover:scale-110 transition my-0.5 z-10" title="Sisipkan Blok di Sini">
+          <i class="fa-solid fa-plus text-[10px]"></i>
+        </button>
+
+        <div class="w-0.5 h-2.5 bg-arcade-ink"></div>
+      </div></div>
+                </div>
+
+                <!-- False Branch (Rose Pop) -->
+                <div class="flex flex-col items-center min-w-[170px] p-2.5 bg-rose-50 border-2 border-arcade-ink shadow-pixel-sm">
+                  <span class="font-pixel text-[8px] bg-arcade-pink text-white px-2 py-0.5 border border-arcade-ink mb-2 shadow-pixel-sm uppercase font-bold">FALSE (NO)</span>
+                  <div class="branch-false w-full flex flex-col items-center" id="slot-false-nd_344"><div class="relative flex flex-col items-center group/item transition-all duration-100" id="chart-node-nd_347">
+            <div class="cursor-pointer px-5 py-2.5 bg-arcade-cyan border-3 border-arcade-ink text-arcade-ink font-mono text-xs shadow-pixel hover:shadow-pixel-lg transition transform hover:-translate-y-0.5 shape-io-parallelogram">
+              <div class="shape-io-content flex items-center gap-2">
+                <span class="font-pixel text-[8px] bg-arcade-ink text-arcade-cyan px-1 py-0.5">OUT</span>
+                <span class="font-mono text-xs text-arcade-ink font-bold max-w-[210px] truncate">"Pin Salah"</span>
+              </div>
+            </div>
+          </div><div class="flex flex-col items-center my-0.5 group/slot relative">
+        <div class="w-0.5 h-4 bg-arcade-ink relative flex items-center justify-center">
+          <div class="absolute -bottom-1 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[5px] border-t-arcade-ink"></div>
+        </div>
+
+        <button class="drop-plus-btn arcade-btn w-6 h-6 bg-arcade-yellow border-2 border-arcade-ink text-arcade-ink flex items-center justify-center text-xs font-bold shadow-pixel-sm hover:bg-white hover:scale-110 transition my-0.5 z-10" title="Sisipkan Blok di Sini">
+          <i class="fa-solid fa-plus text-[10px]"></i>
+        </button>
+
+        <div class="w-0.5 h-2.5 bg-arcade-ink"></div>
+      </div></div>
+                </div>
+              </div>
+            </div>
+          </div><div class="flex flex-col items-center my-0.5 group/slot relative">
+        <div class="w-0.5 h-4 bg-arcade-ink relative flex items-center justify-center">
+          <div class="absolute -bottom-1 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[5px] border-t-arcade-ink"></div>
+        </div>
+
+        <button class="drop-plus-btn arcade-btn w-6 h-6 bg-arcade-yellow border-2 border-arcade-ink text-arcade-ink flex items-center justify-center text-xs font-bold shadow-pixel-sm hover:bg-white hover:scale-110 transition my-0.5 z-10" title="Sisipkan Blok di Sini">
+          <i class="fa-solid fa-plus text-[10px]"></i>
+        </button>
+
+        <div class="w-0.5 h-2.5 bg-arcade-ink"></div>
+      </div></div>
+              </div>
+            </div>
+          </div><div class="flex flex-col items-center my-0.5 group/slot relative">
+        <div class="w-0.5 h-4 bg-arcade-ink relative flex items-center justify-center">
+          <div class="absolute -bottom-1 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[5px] border-t-arcade-ink"></div>
+        </div>
+
+        <button class="drop-plus-btn arcade-btn w-6 h-6 bg-arcade-yellow border-2 border-arcade-ink text-arcade-ink flex items-center justify-center text-xs font-bold shadow-pixel-sm hover:bg-white hover:scale-110 transition my-0.5 z-10" title="Sisipkan Blok di Sini">
+          <i class="fa-solid fa-plus text-[10px]"></i>
+        </button>
+
+        <div class="w-0.5 h-2.5 bg-arcade-ink"></div>
+      </div><div class="relative flex flex-col items-center group/item transition-all duration-100" id="chart-node-end">
+            <div class="px-6 py-2 bg-arcade-pink border-3 border-arcade-ink text-white font-pixel text-[10px] tracking-wider shadow-pixel flex items-center gap-2 uppercase font-extrabold">
+              <i class="fa-solid fa-stop text-[9px]"></i>
+              <span>END</span>
+            </div>
+          </div></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ==================== KOLOM KANAN: SIMULATOR & MEMORI RAM ARCADE TERANG ==================== -->
+    <aside class="w-80 md:w-96 bg-arcade-paper border-l-4 border-arcade-ink flex flex-col shadow-pixel z-20 overflow-hidden">
+      
+      <!-- Kontrol Eksekusi Simulator Arcade -->
+      <div class="p-3.5 border-b-2 border-arcade-ink bg-white">
+        <div class="flex items-center justify-between mb-2.5">
+          <span class="font-pixel text-[9px] text-arcade-ink flex items-center gap-1.5 uppercase">
+            <i class="fa-solid fa-play text-arcade-green text-xs"></i> SIMULATOR 1P
+          </span>
+          <span id="runtimeStatusBadge" class="inline-flex items-center gap-1 px-2 py-0.5 text-[8px] font-pixel border-2 shadow-pixel-sm bg-arcade-cyan text-arcade-ink border-arcade-ink"><span class="w-2 h-2 bg-white border border-arcade-ink inline-block animate-pulse"></span> COMPLETE</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 mb-2">
+          <button id="runFullBtn" class="arcade-btn w-full flex items-center justify-center gap-1.5 py-2 bg-arcade-green hover:bg-emerald-300 text-arcade-ink font-pixel text-[9px] border-2 border-arcade-ink shadow-pixel-sm uppercase font-bold">
+            <i class="fa-solid fa-play text-[9px]"></i>
+            <span>RUN ALL</span>
+          </button>
+          <button id="stepByStepBtn" class="arcade-btn w-full flex items-center justify-center gap-1.5 py-2 bg-arcade-cyan hover:bg-sky-300 text-arcade-ink font-pixel text-[9px] border-2 border-arcade-ink shadow-pixel-sm uppercase font-bold">
+            <i class="fa-solid fa-shoe-prints text-[9px]"></i>
+            <span>STEP 1X</span>
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button id="stopExecutionBtn" class="arcade-btn flex-1 py-1.5 bg-arcade-pink hover:bg-rose-400 text-white font-pixel text-[8px] border-2 border-arcade-ink shadow-pixel-sm uppercase">
+            <i class="fa-solid fa-stop text-[8px] mr-1"></i> STOP
+          </button>
+          
+          <div class="flex items-center bg-arcade-cream border-2 border-arcade-ink px-2 py-0.5 gap-1 shadow-pixel-sm">
+            <span class="font-pixel text-[8px] text-arcade-ink">SPD:</span>
+            <select id="executionTempo" class="bg-transparent font-pixel text-[8px] text-arcade-ink focus:outline-none cursor-pointer">
+              <option value="800">SLOW</option>
+              <option value="400" selected="">NORM</option>
+              <option value="150">FAST</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Terminal / Konsol Output CRT Arcade Terang -->
+      <div class="flex-1 flex flex-col bg-[#141b18] text-arcade-green font-crt text-lg overflow-hidden border-b-2 border-arcade-ink relative">
+        <div class="px-3 py-1.5 border-b-2 border-arcade-green/40 bg-black/60 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="flex gap-1">
+              <span class="w-2.5 h-2.5 bg-arcade-pink border border-black inline-block"></span>
+              <span class="w-2.5 h-2.5 bg-arcade-yellow border border-black inline-block"></span>
+              <span class="w-2.5 h-2.5 bg-arcade-green border border-black inline-block"></span>
+            </div>
+            <span class="font-pixel text-[8px] text-arcade-green ml-1">TERMINAL CRT</span>
+          </div>
+          <button id="clearConsoleBtn" class="font-pixel text-[7px] text-arcade-yellow hover:text-white border border-arcade-yellow/60 px-1 py-0.5 uppercase" title="Bersihkan Terminal">
+            CLS
+          </button>
+        </div>
+
+        <!-- Terminal Output Lines -->
+        <div id="consoleTerminalOutput" class="flex-1 overflow-y-auto p-3 space-y-1 leading-snug"><div class="text-arcade-green">&gt; [INPUT: 1234]</div><div class="text-arcade-green">&gt; Selamat Datang</div></div>
+
+        <!-- Interactive Input Prompt Box Arcade -->
+        <div id="interactiveInputBox" class="p-2.5 bg-black/90 border-t-2 border-arcade-yellow font-mono hidden">
+          <label id="inputPromptLabel" class="block font-pixel text-[8px] text-arcade-yellow mb-1 uppercase">MASUKKAN NILAI UNTUK 'pin':</label>
+          <div class="flex gap-1.5">
+            <input type="text" id="runtimeInputField" class="flex-1 bg-slate-900 text-arcade-cyan px-2.5 py-1 border-2 border-arcade-green font-crt text-xl focus:outline-none focus:border-arcade-yellow" placeholder="Ketik nilai...">
+            <button id="submitRuntimeInputBtn" class="arcade-btn px-3 py-1 bg-arcade-yellow hover:bg-yellow-300 text-arcade-ink font-pixel text-[8px] border-2 border-arcade-ink uppercase font-bold">
+              SEND
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variable Watcher Panel (Memori RAM Arcade) -->
+      <div class="h-48 bg-white flex flex-col overflow-hidden">
+        <div class="px-3 py-1.5 bg-arcade-yellow border-b-2 border-arcade-ink flex items-center justify-between">
+          <span class="font-pixel text-[8px] text-arcade-ink flex items-center gap-1.5 uppercase font-bold">
+            <i class="fa-solid fa-microchip text-arcade-ink"></i> RAM MONITOR
+          </span>
+          <span class="font-pixel text-[7px] text-arcade-ink bg-white px-1.5 py-0.5 border border-arcade-ink uppercase font-bold" id="varCountBadge">3 VAR</span>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto p-2 bg-arcade-paper">
+          <table class="w-full text-left border-collapse font-crt text-base">
+            <thead>
+              <tr class="font-pixel text-[7px] text-arcade-ink border-b-2 border-arcade-ink">
+                <th class="py-1 px-1">VAR</th>
+                <th class="py-1 px-1">TYPE</th>
+                <th class="py-1 px-1">VALUE</th>
+              </tr>
+            </thead>
+            <tbody id="variablesTableBody" class="divide-y divide-arcade-ink/20"><tr class="hover:bg-white/60">
+          <td class="py-1 px-1 font-mono font-bold text-arcade-ink text-xs">salah</td>
+          <td class="py-1 px-1 font-pixel text-[8px] text-arcade-purple">NUM</td>
+          <td class="py-1 px-1 font-mono font-bold text-arcade-green truncate max-w-[90px] text-xs">0</td>
+        </tr><tr class="hover:bg-white/60">
+          <td class="py-1 px-1 font-mono font-bold text-arcade-ink text-xs">berhasil</td>
+          <td class="py-1 px-1 font-pixel text-[8px] text-arcade-purple">NUM</td>
+          <td class="py-1 px-1 font-mono font-bold text-arcade-green truncate max-w-[90px] text-xs">1</td>
+        </tr><tr class="hover:bg-white/60">
+          <td class="py-1 px-1 font-mono font-bold text-arcade-ink text-xs">pin</td>
+          <td class="py-1 px-1 font-pixel text-[8px] text-arcade-purple">NUM</td>
+          <td class="py-1 px-1 font-mono font-bold text-arcade-green truncate max-w-[90px] text-xs">1234</td>
+        </tr></tbody>
+          </table>
+        </div>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <!-- ==================== MODAL: EDIT KONFIGURASI BLOK RETRO ARCADE TERANG ==================== -->
+  <div id="modalEditNode" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center transition-opacity duration-150 opacity-0 hidden">
+    <div class="bg-white border-4 border-arcade-ink shadow-pixel-lg max-w-md w-full mx-4 overflow-hidden transform transition-transform">
+      
+      <div id="modalEditHeader" class="px-4 py-2.5 bg-arcade-yellow border-b-3 border-arcade-ink flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div id="modalIconContainer" class="w-6 h-6 bg-arcade-cyan border border-arcade-ink text-arcade-ink flex items-center justify-center font-bold text-xs shadow-pixel-sm"><i class="fa-solid fa-terminal text-[10px]"></i></div>
+          <h3 id="modalEditTitle" class="font-pixel text-[10px] text-arcade-ink uppercase font-bold">OUTPUT CONFIG</h3>
+        </div>
+        <button id="btnCancelEdit" class="arcade-btn text-arcade-ink w-6 h-6 bg-white border-2 border-arcade-ink flex items-center justify-center hover:bg-arcade-pink hover:text-white transition">
+          <i class="fa-solid fa-xmark text-xs"></i>
+        </button>
+      </div>
+
+      <div class="p-4 space-y-3 bg-arcade-paper">
+        <div id="modalInputsContainer" class="space-y-3">
+            <div>
+              <label class="block font-pixel text-[8px] text-arcade-ink mb-1 uppercase font-bold">TEKS / VARIABEL OUTPUT:</label>
+              <input type="text" id="inputNodeOutput" class="w-full bg-white text-arcade-ink border-2 border-arcade-ink px-2.5 py-1.5 font-mono text-sm focus:outline-none focus:border-arcade-cyan shadow-pixel-sm" value="&quot;Pin Salah&quot;">
+              <p class="font-crt text-base text-arcade-ink/80 mt-1">String wajib kutip dua: <code>"Lulus"</code>, <code>"Halo " + nama</code></p>
+            </div>
+          </div>
+
+        <div class="p-2.5 bg-white border-2 border-arcade-ink text-arcade-ink flex items-start gap-2 shadow-pixel-sm">
+          <i class="fa-solid fa-circle-info text-arcade-orange mt-0.5 text-xs"></i>
+          <span id="modalTipNote" class="font-crt text-base leading-tight">Gunakan tanda kutip dua untuk teks string biasa.</span>
+        </div>
+      </div>
+
+      <div class="px-4 py-2.5 bg-white border-t-3 border-arcade-ink flex items-center justify-between">
+        <button id="btnDeleteCurrentNode" class="arcade-btn px-2.5 py-1.5 bg-arcade-pink hover:bg-rose-400 text-white font-pixel text-[8px] border-2 border-arcade-ink shadow-pixel-sm flex items-center gap-1 uppercase">
+          <i class="fa-solid fa-trash text-[9px]"></i> DELETE
+        </button>
+        <div class="flex gap-2">
+          <button id="btnCloseModal" class="arcade-btn px-3 py-1.5 bg-white hover:bg-slate-100 text-arcade-ink font-pixel text-[8px] border-2 border-arcade-ink shadow-pixel-sm uppercase">CANCEL</button>
+          <button id="btnSaveNodeChanges" class="arcade-btn px-3.5 py-1.5 bg-arcade-green hover:bg-emerald-300 text-arcade-ink font-pixel text-[8px] border-2 border-arcade-ink shadow-pixel-sm uppercase font-bold">SAVE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: PANDUAN KASUS (HINT) RETRO ARCADE ==================== -->
+  <div id="modalCaseHint" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center transition-opacity duration-150 opacity-0 hidden">
+    <div class="bg-white border-4 border-arcade-ink shadow-pixel-lg max-w-lg w-full mx-4 overflow-hidden">
+      <div class="px-4 py-3 bg-arcade-cyan border-b-3 border-arcade-ink flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 bg-white border-2 border-arcade-ink text-arcade-ink flex items-center justify-center shadow-pixel-sm">
+            <i class="fa-solid fa-lightbulb text-sm"></i>
+          </div>
+          <div>
+            <h3 class="font-pixel text-[10px] text-arcade-ink uppercase font-bold">STAGE HINT &amp; GUIDE</h3>
+            <p class="font-crt text-base text-arcade-ink leading-none font-bold" id="hintLevelSubtitle">Stage 9: Validasi PIN ATM (Loop &amp; Counter Percobaan)</p>
+          </div>
+        </div>
+        <button id="btnCloseHintModal" class="arcade-btn text-arcade-ink w-7 h-7 bg-white border-2 border-arcade-ink flex items-center justify-center hover:bg-arcade-pink hover:text-white transition">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <div class="p-4 space-y-3 bg-arcade-paper">
+        <div class="p-3 bg-white border-2 border-arcade-ink shadow-pixel-sm">
+          <div class="font-pixel text-[9px] text-arcade-ink mb-1" id="hintHeaderTitle">GUIDE: 9. Validasi PIN ATM (3x Salah)</div>
+          <p id="hintMainDescription" class="font-crt text-lg text-arcade-ink leading-snug">Sistem meminta input PIN (PIN benar: 1234). Percobaan dibatasi 3 kali. Jika PIN benar, cetak 'Selamat Datang'. Jika salah 3 kali, cetak 'Rekening Diblokir'.</p>
+        </div>
+
+        <div>
+          <div class="font-pixel text-[8px] text-arcade-ink mb-1.5 flex items-center gap-1.5 uppercase">
+            <i class="fa-solid fa-list-check text-arcade-ink"></i> LANGKAH SOLUSI DISARANKAN:
+          </div>
+          <ul id="hintStepsBulletList" class="space-y-1 pl-5 list-disc font-crt text-lg text-arcade-ink"><li>Inisialisasi 'salah = 0' dan 'berhasil = 0' dengan blok Process.</li><li>Buat While: kondisi '(salah &lt; 3) &amp;&amp; (berhasil == 0)'.</li><li>Di dalam While: Input 'pin'. Buat If: 'pin == 1234'.</li><li>Jika Benar: Output 'Selamat Datang' lalu Process 'berhasil = 1'.</li><li>Jika Salah: Output 'PIN Salah!' lalu Process 'salah = salah + 1'.</li><li>Setelah keluar dari While: Buat If 'berhasil == 0' -&gt; Output 'Rekening Diblokir'.</li></ul>
+        </div>
+      </div>
+
+      <div class="px-4 py-2.5 bg-white border-t-3 border-arcade-ink flex justify-end">
+        <button id="btnDismissHint" class="arcade-btn px-4 py-1.5 bg-arcade-yellow hover:bg-yellow-300 text-arcade-ink font-pixel text-[9px] border-2 border-arcade-ink shadow-pixel-sm uppercase font-bold">GOT IT!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: TANTANGAN BERHASIL (STAGE CLEAR) RETRO ARCADE ==================== -->
+  <div id="modalCaseSuccess" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center transition-opacity duration-150 opacity-0 hidden">
+    <div class="bg-white border-4 border-arcade-ink shadow-pixel-lg max-w-sm w-full mx-4 text-center p-5">
+      <div class="w-14 h-14 mx-auto bg-arcade-yellow border-3 border-arcade-ink text-arcade-ink flex items-center justify-center text-2xl shadow-pixel mb-3">
+        <i class="fa-solid fa-trophy text-arcade-pink"></i>
+      </div>
+      <span class="font-pixel text-[9px] text-arcade-pink uppercase font-extrabold tracking-wider">STAGE CLEAR!</span>
+      <h3 class="font-pixel text-xs text-arcade-ink mt-1.5 mb-2 uppercase">ALGORITMA SUKSES!</h3>
+      <p class="font-crt text-lg text-arcade-ink/80 leading-snug mb-3" id="successPopupMsg">Stage "Stage 8: Matriks Pola (Nested Loop)" tuntas! Algoritma kamu bekerja dengan sempurna.</p>
+
+      <div class="flex justify-center gap-2 text-xl text-amber-500 mb-4">
+        <i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i>
+      </div>
+
+      <div class="flex gap-2">
+        <button id="btnStayOnCanvas" class="arcade-btn flex-1 py-1.5 bg-white hover:bg-slate-100 text-arcade-ink font-pixel text-[8px] border-2 border-arcade-ink shadow-pixel-sm uppercase">
+          INSPECT
+        </button>
+        <button id="btnNextLevelSuccess" class="arcade-btn flex-1 py-1.5 bg-arcade-green hover:bg-emerald-300 text-arcade-ink font-pixel text-[8px] border-2 border-arcade-ink shadow-pixel-sm uppercase font-bold">
+          NEXT STAGE →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: GRAND CELEBRATION (TAMAT SEMUA LEVEL) ARCADE ==================== -->
+  <div id="modalGrandCompletion" class="fixed inset-0 bg-black/70 backdrop-blur-xs z-50 flex items-center justify-center transition-opacity duration-200 opacity-0 hidden">
+    <div class="bg-white border-4 border-arcade-ink shadow-pixel-lg max-w-lg w-full mx-4 overflow-hidden">
+      
+      <!-- Banner Gambar Asli Logo Prodi UNPAS -->
+      <div class="p-5 bg-arcade-yellow border-b-3 border-arcade-ink flex flex-col items-center text-center relative">
+        <button id="btnCloseGrandModal" class="arcade-btn absolute top-3 right-3 text-arcade-ink w-7 h-7 bg-white border-2 border-arcade-ink flex items-center justify-center hover:bg-arcade-pink hover:text-white transition">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+
+        <div class="w-full bg-white p-3 border-3 border-arcade-ink shadow-pixel-sm flex items-center justify-center mb-3">
+          <img src="file:///C:/Users/deryl/Downloads/logoprodi2_2.png" alt="Logo Teknik Informatika Universitas Pasundan" class="max-w-full h-auto max-h-16 object-contain" onerror="this.onerror=null; this.src='logoprodi2_2.png';">
+        </div>
+
+        <span class="inline-flex items-center gap-1.5 px-3 py-0.5 bg-arcade-pink text-white font-pixel text-[8px] border-2 border-arcade-ink shadow-pixel-sm uppercase font-bold">
+          <i class="fa-solid fa-crown text-arcade-yellow"></i> ALL STAGES CLEARED
+        </span>
+        <h2 class="font-pixel text-xs text-arcade-ink mt-2 leading-tight uppercase font-extrabold">SELAMAT! KAMU TELAH MENAMATKAN SELURUH MISI!</h2>
+        <p class="font-crt text-base text-arcade-ink font-bold mt-0.5">TEKNIK INFORMATIKA UNIVERSITAS PASUNDAN</p>
+      </div>
+
+      <!-- Detail Rekapitulasi Arcade -->
+      <div class="p-4 space-y-3 bg-arcade-paper">
+        <div class="p-3 bg-white border-2 border-arcade-ink text-center shadow-pixel-sm">
+          <div class="font-pixel text-[8px] text-arcade-cyan tracking-wider uppercase font-bold">HIGH SCORE ACHIEVEMENT</div>
+          <div class="font-pixel text-[10px] text-arcade-ink my-1">MASTER OF FLOWCHART LOGIC</div>
+          <div class="flex justify-center gap-1 text-amber-500 text-sm mb-1">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+          </div>
+          <p class="font-crt text-base text-arcade-ink leading-snug max-w-sm mx-auto">
+            Logika sekuensial, percabangan nested if, dan nested loop validasi ATM berhasil dirancang dengan sempurna!
+          </p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 text-center">
+          <div class="p-2 bg-white border-2 border-arcade-ink shadow-pixel-sm">
+            <span class="block font-pixel text-[7px] text-arcade-ink/70">STAGES</span>
+            <span class="font-pixel text-[10px] text-arcade-ink font-bold">9 / 9</span>
+          </div>
+          <div class="p-2 bg-white border-2 border-arcade-ink shadow-pixel-sm">
+            <span class="block font-pixel text-[7px] text-arcade-ink/70">ACCURACY</span>
+            <span class="font-pixel text-[10px] text-arcade-green font-bold">100%</span>
+          </div>
+          <div class="p-2 bg-white border-2 border-arcade-ink shadow-pixel-sm">
+            <span class="block font-pixel text-[7px] text-arcade-ink/70">MOTTO</span>
+            <span class="font-crt text-base text-arcade-orange font-bold block leading-none mt-1">SMART • ENDURE</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-4 py-2.5 bg-white border-t-3 border-arcade-ink flex items-center justify-between gap-2">
+        <button id="btnOpenCertFromGrand" class="arcade-btn flex-1 py-2 bg-unpas-gold hover:bg-yellow-400 text-arcade-ink font-pixel text-[9px] border-2 border-arcade-ink shadow-pixel-sm uppercase font-bold flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-certificate text-xs"></i> KLAIM SERTIFIKAT
+        </button>
+        <button id="btnGoToSandbox" class="arcade-btn flex-1 py-2 bg-white hover:bg-slate-100 text-arcade-ink font-pixel text-[8px] border-2 border-arcade-ink shadow-pixel-sm uppercase font-bold">
+          FREE SANDBOX
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: SERTIFIKAT PENGHARGAAN KLASIK & UNDUH PDF ==================== -->
+  <div id="modalClassicCertificate" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center transition-opacity duration-200 overflow-y-auto p-4">
+    <div class="bg-white border-4 border-arcade-ink shadow-pixel-lg max-w-4xl w-full my-auto flex flex-col overflow-hidden max-h-[95vh]">
+      
+      <!-- Modal Top Action Bar -->
+      <div class="px-4 py-2.5 bg-arcade-yellow border-b-3 border-arcade-ink flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-award text-arcade-pink text-base"></i>
+          <span class="font-pixel text-[10px] text-arcade-ink font-bold uppercase">SERTIFIKAT PENGHARGAAN RESMI</span>
+        </div>
+        
+        <!-- Controls: Input Nama & Tombol Download -->
+        <div class="flex items-center gap-2">
+          <div class="flex items-center bg-white border-2 border-arcade-ink px-2 py-0.5 shadow-pixel-sm">
+            <span class="font-pixel text-[8px] text-arcade-ink mr-1.5">NAMA:</span>
+            <input type="text" id="certRecipientInput" value="NAMA PESERTA" maxlength="40" class="font-mono text-xs font-bold text-arcade-ink focus:outline-none bg-transparent w-36 sm:w-48 placeholder-slate-400" placeholder="Ketik namamu...">
+          </div>
+
+          <button id="btnDownloadCertPdf" class="arcade-btn flex items-center gap-1.5 px-3 py-1 bg-arcade-green hover:bg-emerald-300 text-arcade-ink border-2 border-arcade-ink font-pixel text-[8px] shadow-pixel-sm transition uppercase font-bold">
+            <i class="fa-solid fa-file-pdf text-xs"></i>
+            <span>UNDUH PDF</span>
+          </button>
+
+          <button id="btnCloseCertModal" class="arcade-btn w-6 h-6 bg-white border-2 border-arcade-ink flex items-center justify-center hover:bg-arcade-pink hover:text-white transition">
+            <i class="fa-solid fa-xmark text-xs"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Scrollable Preview Area -->
+      <div class="p-4 sm:p-6 bg-slate-200/90 overflow-auto flex justify-center items-center">
+        
+        <!-- KANVAS SERTIFIKAT KLASIK (A4 Landscape Proportional 842px x 595px) -->
+        <div id="classicCertificateRenderArea" class="w-[842px] min-w-[842px] h-[595px] min-h-[595px] bg-[#faf6eb] text-[#2c2416] p-10 relative flex flex-col justify-between cert-frame-outer box-border select-none" style="background-image: radial-gradient(#e5d9bf 1px, transparent 1px); background-size: 24px 24px;">
+          
+          <!-- Ornamen Sudut Klasik -->
+          <div class="cert-corner-ornament cert-corner-tl"></div>
+          <div class="cert-corner-ornament cert-corner-tr"></div>
+          <div class="cert-corner-ornament cert-corner-bl"></div>
+          <div class="cert-corner-ornament cert-corner-br"></div>
+
+          <!-- Header Sertifikat: Logo Asli & Lembaga -->
+          <div class="text-center z-10 flex flex-col items-center">
+            <div class="h-14 mb-2 flex items-center justify-center">
+              <img src="file:///C:/Users/deryl/Downloads/logoprodi2_2.png" alt="Logo Teknik Informatika UNPAS" class="max-h-12 w-auto object-contain" onerror="this.onerror=null; this.src='logoprodi2_2.png';">
+            </div>
+            
+            <div class="font-serifClassic text-[11px] tracking-[0.25em] text-[#6b551c] uppercase font-bold">
+              PROGRAM STUDI TEKNIK INFORMATIKA • UNIVERSITAS PASUNDAN
+            </div>
+            <div class="w-48 h-0.5 bg-[#8a6809]/40 mx-auto my-1.5"></div>
+            
+            <h1 class="font-serifDeco text-2xl tracking-[0.18em] text-[#1f190e] uppercase mt-1 font-bold">
+              SERTIFIKAT PENGHARGAAN
+            </h1>
+            <p class="font-bodyClassic text-[10px] tracking-[0.2em] italic text-[#705b2a] mt-0.5">
+              CERTIFICATE OF EXCELLENCE IN ALGORITHMIC LOGIC
+            </p>
+          </div>
+
+          <!-- Bagian Tengah: Diberikan Kepada & Nama Penerima -->
+          <div class="text-center z-10 my-1">
+            <p class="font-bodyClassic text-xs italic text-[#554728]">
+              Dengan bangga diberikan kepada:
+            </p>
+            
+            <!-- Nama Peserta Calligraphy Besar -->
+            <div class="my-1.5 relative inline-block max-w-[700px]">
+              <div id="certDisplayedName" class="font-calligraphy text-4xl sm:text-5xl text-[#1f190e] px-8 tracking-wide font-normal leading-tight">Deryl Sofyan</div>
+              <div class="w-full h-[1.5px] bg-[#8a6809] mt-1 mx-auto"></div>
+            </div>
+
+            <!-- Deskripsi Narasi Keberhasilan -->
+            <p class="font-bodyClassic text-xs text-[#3f341d] leading-relaxed max-w-[620px] mx-auto mt-2 text-justify sm:text-center">
+              Atas dedikasi dan penguasaan luar biasa dalam menyelesaikan seluruh 9 tingkatan studi kasus logika komputasi pada simulator <strong class="text-[#1f190e]">FlowCraft</strong>, meliputi perancangan sekuensial, percabangan <em class="italic">Nested If</em>, perulangan bertingkat <em class="italic">Nested While Loop</em>, dan validasi algoritma sistem autentikasi perbankan.
+            </p>
+          </div>
+
+          <!-- Footer Sertifikat: Tanggal, Segel Medali Emas, dan Tanda Tangan -->
+          <div class="z-10 flex items-end justify-between px-8 pb-2">
+            
+            <!-- Tanggal & Lokasi -->
+            <div class="text-center w-52">
+              <div class="font-bodyClassic text-[11px] text-[#44381e]" id="certIssuingDate">Bandung, 7 November 2026</div>
+              <div class="w-36 h-px bg-[#8a6809]/60 mx-auto my-1"></div>
+              <div class="font-serifClassic text-[9px] tracking-wider text-[#6b551c] uppercase">
+                TANGGAL PENYELESAIAN
+              </div>
+            </div>
+
+            <!-- Segel Medali Klasik Emas (Emblem) -->
+            <div class="flex flex-col items-center">
+              <div class="w-20 h-20 rounded-full border-4 border-[#8a6809] bg-gradient-to-br from-[#f5df93] via-[#d4af37] to-[#8a6809] flex flex-col items-center justify-center shadow-md relative">
+                <div class="w-16 h-16 rounded-full border border-dashed border-[#574106] flex flex-col items-center justify-center text-center p-1">
+                  <i class="fa-solid fa-crown text-[#443305] text-xs"></i>
+                  <span class="font-serifClassic text-[7px] text-[#2c2002] font-black uppercase tracking-wider leading-none mt-0.5">SMART</span>
+                  <span class="font-serifClassic text-[6px] text-[#2c2002] font-extrabold uppercase leading-none mt-0.5">LOGIC VERIFIED</span>
+                </div>
+              </div>
+              <div class="font-serifClassic text-[8px] text-[#6b551c] mt-1 tracking-widest font-bold">
+                IF • UNPAS
+              </div>
+            </div>
+
+            <!-- Pengesahan / Laboratorium -->
+            <div class="text-center w-56">
+              <div class="font-serifClassic text-[9px] tracking-wider text-[#6b551c] uppercase font-bold mb-1">
+                DISAHKAN OLEH:
+              </div>
+              <div class="h-16 flex items-center justify-center my-0.5 relative">
+                <img src="file:///C:/Users/deryl/Downloads/ttdgoro.png" alt="Tanda Tangan Anggoro Ari N., ST., M.KOM." class="max-h-16 w-auto object-contain mix-blend-multiply filter contrast-125" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" style="display: none;">
+                <div class="font-calligraphy text-2xl text-[#1f190e] leading-none hidden" style="display: block;">
+                  Anggoro Ari N.
+                </div>
+              </div>
+              <div class="w-48 h-px bg-[#8a6809]/60 mx-auto my-1"></div>
+              <div class="font-serifClassic text-[10px] tracking-wide text-[#1f190e] uppercase font-bold leading-tight">
+                Anggoro Ari N., ST., M.KOM.
+              </div>
+              <div class="font-serifClassic text-[8px] tracking-wider text-[#6b551c] uppercase mt-0.5">
+                KETUA PROGRAM STUDI TEKNIK INFORMATIKA
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Modal Bottom Actions -->
+      <div class="px-4 py-2.5 bg-white border-t-3 border-arcade-ink flex items-center justify-between">
+        <span class="font-crt text-base text-arcade-ink/80 font-bold">
+          *Nama pada sertifikat dapat diubah langsung sebelum mengunduh format PDF.
+        </span>
+        <button id="btnDismissCertModal" class="arcade-btn px-4 py-1.5 bg-arcade-yellow hover:bg-yellow-300 text-arcade-ink font-pixel text-[8px] border-2 border-arcade-ink shadow-pixel-sm uppercase font-bold">
+          TUTUP
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: KREDIT LOGO ASLI TEKNIK INFORMATIKA UNPAS ==================== -->
+  <div id="modalCreditsInfo" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-150">
+    <div class="bg-white border-4 border-arcade-ink shadow-pixel-lg max-w-lg w-full mx-4 overflow-hidden">
+      
+      <!-- LOGO ASLI DENGAN LATAR BERSIH & TERANG -->
+      <div class="p-5 bg-arcade-yellow border-b-3 border-arcade-ink flex flex-col items-center relative">
+        <button id="btnCloseCreditsModal" class="arcade-btn absolute top-3 right-3 text-arcade-ink w-7 h-7 bg-white border-2 border-arcade-ink flex items-center justify-center hover:bg-arcade-pink hover:text-white transition">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+
+        <span class="font-pixel text-[8px] text-arcade-ink bg-white px-2.5 py-0.5 border-2 border-arcade-ink mb-2.5 uppercase font-bold shadow-pixel-sm">
+          OFFICIAL IDENTITY
+        </span>
+
+        <!-- GAMBAR ASLI DARI FILE logoprodi2.png -->
+        <div class="w-full bg-white p-3 border-3 border-arcade-ink shadow-pixel-sm flex items-center justify-center min-h-[90px]">
+          <img src="file:///C:/Users/deryl/Downloads/logoprodi2_2.png" alt="Logo Resmi Program Studi Teknik Informatika Universitas Pasundan" class="max-w-full h-auto max-h-20 object-contain" onerror="this.onerror=null; this.src='logoprodi2_2.png';">
+        </div>
+      </div>
+
+      <!-- KONTEN IDENTITAS AKADEMIK -->
+      <div class="p-4 space-y-2.5 bg-arcade-paper">
+        <div class="bg-white border-2 border-arcade-ink p-3 space-y-2 shadow-pixel-sm">
+          <div class="flex items-center justify-between pb-1.5 border-b-2 border-dashed border-arcade-ink/30 font-pixel text-[8px] text-arcade-ink">
+            <span>MEDIA PEMBELAJARAN ALGORITMA</span>
+            <span class="text-unpas-gold font-bold">IF UNPAS</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 font-crt text-base pt-1">
+            <div>
+              <span class="text-arcade-ink/60 block text-xs">Institusi:</span>
+              <span class="text-arcade-ink font-bold">Universitas Pasundan</span>
+            </div>
+            <div>
+              <span class="text-arcade-ink/60 block text-xs">Program Studi:</span>
+              <span class="text-arcade-ink font-bold">Teknik Informatika (IF)</span>
+            </div>
+            <div>
+              <span class="text-arcade-ink/60 block text-xs">Semboyan:</span>
+              <span class="text-arcade-orange font-bold">SMART • ENDURANCE • TEAMWORK</span>
+            </div>
+            <div>
+              <span class="text-arcade-ink/60 block text-xs">Simulator:</span>
+              <span class="text-arcade-cyan font-bold">Interactive Flowgorithm Arcade</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="font-crt text-base text-arcade-ink/80 text-center leading-snug">
+          FlowCraft Arcade dirancang untuk melatih kemampuan logika dan visualisasi algoritma dasar secara ceria, interaktif, dan mudah dipahami.
+        </p>
+      </div>
+
+      <div class="px-4 py-2.5 bg-white border-t-3 border-arcade-ink flex items-center justify-between">
+        <span class="font-pixel text-[8px] text-arcade-ink">FLOWCRAFT • IF UNPAS 2026</span>
+        <button id="btnDismissCredits" class="arcade-btn px-4 py-1.5 bg-arcade-yellow hover:bg-yellow-300 text-arcade-ink font-pixel text-[8px] border-2 border-arcade-ink shadow-pixel-sm uppercase font-bold">
+          CLOSE
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== LOGIKA SISTEM & SCRIPT UTAMA ==================== -->
+  <script>
+    /* ==========================================================================
+       1. DATA 9 STUDI KASUS + SANDBOX MODE
+       ========================================================================== */
+    const CHALLENGES = [
+      {
+        id: "case1",
+        title: "Stage 1: Hello World",
+        shortName: "1. Hello World",
+        desc: "Cetak teks sambutan 'Selamat Datang di Pemrograman!' ke layar terminal konsol.",
+        expectedDisplay: '"Selamat Datang di Pemrograman!"',
+        targetOutput: "Selamat Datang di Pemrograman!",
+        hintSteps: [
+          "Tarik blok 'OUTPUT' ke slot (+) di antara Start dan End.",
+          "Klik blok Output dan isi teks: 'Selamat Datang di Pemrograman!'.",
+          "Klik tombol 'RUN ALL' untuk menyelesaikan misi."
+        ],
+        sampleInputs: [],
+        initialFlow: [
+          { id: "start", type: "start", text: "Start" },
+          { id: "end", type: "end", text: "End" }
+        ]
+      },
+      {
+        id: "case2",
+        title: "Stage 2: Input & Sapaan",
+        shortName: "2. Input Sapaan",
+        desc: "Minta masukan pengguna dan simpan ke variabel 'nama', lalu cetak 'Halo ' digabung dengan nama tersebut.",
+        expectedDisplay: '"Halo [nama]"',
+        targetCheck: (output, mem) => {
+          return output.some(line => line.toLowerCase().includes("halo") && mem.nama && line.toLowerCase().includes(String(mem.nama).toLowerCase()));
+        },
+        hintSteps: [
+          "Sisipkan blok 'INPUT' dengan nama variabel: 'nama'.",
+          "Sisipkan blok 'OUTPUT' setelahnya dengan ekspresi: '\"Halo \" + nama'.",
+          "Klik RUN ALL dan ketik namamu di terminal."
+        ],
+        sampleInputs: ["Budi"],
+        initialFlow: [
+          { id: "start", type: "start", text: "Start" },
+          { id: "end", type: "end", text: "End" }
+        ]
+      },
+      {
+        id: "case3",
+        title: "Stage 3: Hitung Variabel (Operasi Luas)",
+        shortName: "3. Hitung Variabel",
+        desc: "Minta input 'alas' dan 'tinggi', hitung luas segitiga dengan formula 'luas = (alas * tinggi) / 2', lalu cetak nilai luas.",
+        expectedDisplay: 'luas = (alas * tinggi)/2',
+        targetCheck: (output, mem) => {
+          return mem.luas !== undefined && output.some(l => l.includes(String(mem.luas)));
+        },
+        hintSteps: [
+          "Buat Input untuk 'alas' dan Input kedua untuk 'tinggi'.",
+          "Gunakan blok Process / Assign: variabel 'luas' dengan ekspresi '(alas * tinggi) / 2'.",
+          "Gunakan blok Output untuk mencetak variabel 'luas'."
+        ],
+        sampleInputs: [10, 6],
+        initialFlow: [
+          { id: "start", type: "start", text: "Start" },
+          { id: "end", type: "end", text: "End" }
+        ]
+      },
+      {
+        id: "case4",
+        title: "Stage 4: Pengkondisian (If-Else)",
+        shortName: "4. Seleksi Nilai (If-Else)",
+        desc: "Input nilai angka 'nilai'. Jika 'nilai >= 75' cetak 'Lulus', jika kurang cetak 'Remedial'.",
+        expectedDisplay: 'nilai >= 75 ? Lulus : Remedial',
+        targetCheck: (output, mem) => {
+          if (Number(mem.nilai) >= 75) {
+            return output.some(l => l.toLowerCase().includes("lulus"));
+          } else {
+            return output.some(l => l.toLowerCase().includes("remedial"));
+          }
+        },
+        hintSteps: [
+          "Input variabel 'nilai'.",
+          "Sisipkan blok Decision (If) dengan kondisi: 'nilai >= 75'.",
+          "Pada cabang Benar (TRUE), beri Output 'Lulus'.",
+          "Pada cabang Salah (FALSE), beri Output 'Remedial'."
+        ],
+        sampleInputs: [82],
+        initialFlow: [
+          { id: "start", type: "start", text: "Start" },
+          { id: "end", type: "end", text: "End" }
+        ]
+      },
+      {
+        id: "case5",
+        title: "Stage 5: Pengulangan (While Loop)",
+        shortName: "5. Deret Loop (1 s.d 5)",
+        desc: "Buat variabel 'angka = 1'. Ulangi selama 'angka <= 5', cetak 'angka' lalu tambahkan 'angka = angka + 1'.",
+        expectedDisplay: 'Cetak 1, 2, 3, 4, 5',
+        targetCheck: (output) => {
+          const numbers = output.filter(t => /^\d+$/.test(t.trim())).map(Number);
+          return [1, 2, 3, 4, 5].every(n => numbers.includes(n));
+        },
+        hintSteps: [
+          "Beri Process awal: 'angka = 1'.",
+          "Sisipkan blok While dengan kondisi: 'angka <= 5'.",
+          "Di dalam badan While: letakkan Output 'angka' lalu Process 'angka = angka + 1'."
+        ],
+        sampleInputs: [],
+        initialFlow: [
+          { id: "start", type: "start", text: "Start" },
+          { id: "end", type: "end", text: "End" }
+        ]
+      },
+      {
+        id: "case6",
+        title: "Stage 6: Sistem Menu Login (Nested If)",
+        shortName: "6. Autentikasi Login (Nested If)",
+        desc: "Input 'user' dan 'pass'. Jika user == 'admin', periksa pass == '123' (True: cetak 'Login Berhasil', False: cetak 'Password Salah'). Jika user bukan admin, cetak 'User Tidak Ditemukan'.",
+        expectedDisplay: 'Nested If: user & pass',
+        targetCheck: (output, mem) => {
+          const u = String(mem.user || '').toLowerCase();
+          const p = String(mem.pass || '');
+          if (u === 'admin') {
+            if (p === '123') return output.some(l => l.toLowerCase().includes("login berhasil"));
+            return output.some(l => l.toLowerCase().includes("password salah"));
+          }
+          return output.some(l => l.toLowerCase().includes("user tidak ditemukan"));
+        },
+        hintSteps: [
+          "Input variabel 'user', lalu Input variabel 'pass'.",
+          "Buat If luar: kondisi 'user == \"admin\"'.",
+          "Di cabang True luar: buat If kedua (Nested) dengan kondisi 'pass == \"123\"'.",
+          "True dalam: Output 'Login Berhasil'. False dalam: Output 'Password Salah'.",
+          "False luar: Output 'User Tidak Ditemukan'."
+        ],
+        sampleInputs: ["admin", "123"],
+        initialFlow: [
+          { id: "start", type: "start", text: "Start" },
+          { id: "end", type: "end", text: "End" }
+        ]
+      },
+      {
+        id: "case7",
+        title: "Stage 7: Predikat Nilai (Multi-level If)",
+        shortName: "7. Predikat Huruf (Multi-If)",
+        desc: "Input variabel 'skor'. Jika 'skor >= 80' cetak 'Grade A'. Jika tidak, cek jika 'skor >= 70' cetak 'Grade B', selain itu cetak 'Grade C'.",
+        expectedDisplay: 'Grade A / Grade B / Grade C',
+        targetCheck: (output, mem) => {
+          const s = Number(mem.skor);
+          if (s >= 80) return output.some(l => l.toLowerCase().includes("grade a"));
+          if (s >= 70) return output.some(l => l.toLowerCase().includes("grade b"));
+          return output.some(l => l.toLowerCase().includes("grade c"));
+        },
+        hintSteps: [
+          "Input variabel 'skor'.",
+          "If 1: 'skor >= 80' -> True: Output 'Grade A'.",
+          "Pada cabang False If 1, sisipkan If 2 bertingkat: 'skor >= 70'.",
+          "True If 2: Output 'Grade B'. False If 2: Output 'Grade C'."
+        ],
+        sampleInputs: [85],
+        initialFlow: [
+          { id: "start", type: "start", text: "Start" },
+          { id: "end", type: "end", text: "End" }
+        ]
+      },
+      {
+        id: "case8",
+        title: "Stage 8: Matriks Pola (Nested Loop)",
+        shortName: "8. Matriks Grid (Nested Loop)",
+        desc: "Buat loop luar 'i = 1 s.d 2' dan loop dalam 'j = 1 s.d 2'. Cetak koordinat format 'i + \",\" + j' (akan mencetak 1,1 lalu 1,2 lalu 2,1 lalu 2,2).",
+        expectedDisplay: 'Koordinat: 1,1 | 1,2 | 2,1 | 2,2',
+        targetCheck: (output) => {
+          const coords = ["1,1", "1,2", "2,1", "2,2"];
+          return coords.every(c => output.some(line => line.replace(/\s+/g, '').includes(c)));
+        },
+        hintSteps: [
+          "Inisialisasi Process luar: 'i = 1'.",
+          "Buat While luar: kondisi 'i <= 2'.",
+          "Di dalam badan While luar: Process 'j = 1', lalu buat While kedua (Nested While): 'j <= 2'.",
+          "Di dalam While dalam: Output 'i + \",\" + j', lalu Process 'j = j + 1'.",
+          "Setelah keluar dari While dalam: Process 'i = i + 1'."
+        ],
+        sampleInputs: [],
+        initialFlow: [
+          { id: "start", type: "start", text: "Start" },
+          { id: "end", type: "end", text: "End" }
+        ]
+      },
+      {
+        id: "case9",
+        title: "Stage 9: Validasi PIN ATM (Loop & Counter Percobaan)",
+        shortName: "9. Validasi PIN ATM (3x Salah)",
+        desc: "Sistem meminta input PIN (PIN benar: 1234). Percobaan dibatasi 3 kali. Jika PIN benar, cetak 'Selamat Datang'. Jika salah 3 kali, cetak 'Rekening Diblokir'.",
+        expectedDisplay: '"Selamat Datang" / "Rekening Diblokir"',
+        targetCheck: (output, mem) => {
+          const outStr = output.join(" ").toLowerCase();
+          const p = Number(mem.pin);
+          const s = Number(mem.salah);
+          if (p === 1234) {
+            return outStr.includes("selamat datang");
+          }
+          if (s >= 3) {
+            return outStr.includes("rekening diblokir") || outStr.includes("diblokir");
+          }
+          return outStr.includes("selamat datang") || outStr.includes("rekening diblokir");
+        },
+        hintSteps: [
+          "Inisialisasi 'salah = 0' dan 'berhasil = 0' dengan blok Process.",
+          "Buat While: kondisi '(salah < 3) && (berhasil == 0)'.",
+          "Di dalam While: Input 'pin'. Buat If: 'pin == 1234'.",
+          "Jika Benar: Output 'Selamat Datang' lalu Process 'berhasil = 1'.",
+          "Jika Salah: Output 'PIN Salah!' lalu Process 'salah = salah + 1'.",
+          "Setelah keluar dari While: Buat If 'berhasil == 0' -> Output 'Rekening Diblokir'."
+        ],
+        sampleInputs: ["1234"],
+        initialFlow: [
+          { id: "start", type: "start", text: "Start" },
+          { id: "end", type: "end", text: "End" }
+        ]
+      },
+      {
+        id: "sandbox",
+        title: "Free Mode (Sandbox)",
+        shortName: "★ Free Mode (Sandbox)",
+        desc: "Eksplorasi dan kembangkan logika algoritma apa saja secara bebas tanpa batasan misi.",
+        expectedDisplay: 'Bebas Berkreasi',
+        targetCheck: () => true,
+        hintSteps: [
+          "Gunakan semua jenis blok sesuai imajinasimu.",
+          "Perhatikan status memori pada Variable Watcher secara real-time."
+        ],
+        sampleInputs: [],
+        initialFlow: [
+          { id: "start", type: "start", text: "Start" },
+          { id: "end", type: "end", text: "End" }
+        ]
+      }
+    ];
+
+    /* ==========================================================================
+       2. STATUS APLIKASI (STATE MANAGEMENT)
+       ========================================================================== */
+    let currentLevelIndex = 0;
+    let flowchartNodesTree = [];
+    let idNodeCounter = 300;
+    let memoryRAM = {};
+    let terminalHistory = [];
+    let isExecuting = false;
+    let isStepMode = false;
+    let runtimeIterator = null;
+    let inputPromiseResolver = null;
+    let activeEditingNode = null;
+    let canvasZoom = 1;
+    let completedCaseIds = new Set();
+
+    /* ==========================================================================
+       3. RETRO CHIPTUNE 8-BIT SUNDA SYNTHESIZER (WEB AUDIO API)
+       ========================================================================== */
+    let audioCtx = null;
+    let musicMasterGain = null;
+    let isMusicPlaying = false;
+    let musicIntervalId = null;
+
+    // Tangga Nada Salendro / Degung Sunda (Hz)
+    const SUNDA_LARAS = {
+      DA: 261.63,     // C4
+      MI: 293.66,     // D4
+      NA: 329.63,     // E4
+      TI: 392.00,     // G4
+      LEU: 440.00,    // A4
+      DA_HIGH: 523.25 // C5
+    };
+
+    function initAudioContext() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContextClass();
+        musicMasterGain = audioCtx.createGain();
+        musicMasterGain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        musicMasterGain.connect(audioCtx.destination);
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    // Suara Kendang 8-bit Noise & Square Wave
+    function playKendangTepak(time, type = 'DUNG') {
+      if (!audioCtx) return;
+
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(musicMasterGain);
+
+      if (type === 'DUNG') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(160, time);
+        osc.frequency.exponentialRampToValueAtTime(40, time + 0.3);
+
+        gain.gain.setValueAtTime(0.8, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.3);
+
+        osc.start(time);
+        osc.stop(time + 0.3);
+      } else if (type === 'PAK') {
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(420, time);
+        osc.frequency.exponentialRampToValueAtTime(100, time + 0.08);
+
+        gain.gain.setValueAtTime(0.4, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.08);
+
+        osc.start(time);
+        osc.stop(time + 0.08);
+      } else { // 'TUNG'
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(280, time);
+        osc.frequency.exponentialRampToValueAtTime(180, time + 0.12);
+
+        gain.gain.setValueAtTime(0.35, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.12);
+
+        osc.start(time);
+        osc.stop(time + 0.12);
+      }
+    }
+
+    // Melodi Chiptune Square Wave Salendro
+    function playBonangNote(time, freq, duration = 0.25) {
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(freq, time);
+
+      gain.gain.setValueAtTime(0.25, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+
+      osc.connect(gain);
+      gain.connect(musicMasterGain);
+      osc.start(time);
+      osc.stop(time + duration);
+    }
+
+    const sundaMelodySeq = [
+      SUNDA_LARAS.DA, SUNDA_LARAS.MI, SUNDA_LARAS.NA, SUNDA_LARAS.TI,
+      SUNDA_LARAS.LEU, SUNDA_LARAS.DA_HIGH, SUNDA_LARAS.TI, SUNDA_LARAS.NA,
+      SUNDA_LARAS.MI, SUNDA_LARAS.NA, SUNDA_LARAS.DA, SUNDA_LARAS.TI
+    ];
+    let seqStep = 0;
+
+    function startSundaMusic() {
+      initAudioContext();
+      isMusicPlaying = true;
+      document.getElementById("equalizerVisualizer").classList.remove("hidden");
+      document.getElementById("equalizerVisualizer").classList.add("flex");
+      document.getElementById("audioBtnLabel").textContent = "BGM ON";
+
+      const bpm = 132;
+      const beatInterval = (60 / bpm) * 1000 / 2;
+
+      musicIntervalId = setInterval(() => {
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+
+        if (seqStep % 4 === 0) {
+          playKendangTepak(now, 'DUNG');
+        } else if (seqStep % 4 === 2) {
+          playKendangTepak(now, 'PAK');
+        } else {
+          playKendangTepak(now, 'TUNG');
+        }
+
+        const note = sundaMelodySeq[seqStep % sundaMelodySeq.length];
+        playBonangNote(now, note, 0.22);
+
+        seqStep++;
+      }, beatInterval);
+    }
+
+    function stopSundaMusic() {
+      isMusicPlaying = false;
+      if (musicIntervalId) clearInterval(musicIntervalId);
+      document.getElementById("equalizerVisualizer").classList.add("hidden");
+      document.getElementById("equalizerVisualizer").classList.remove("flex");
+      document.getElementById("audioBtnLabel").textContent = "8-BIT BGM";
+    }
+
+    /* ==========================================================================
+       4. INISIALISASI HALAMAN & NAVIGASI LEVEL
+       ========================================================================== */
+    const caseSelector = document.getElementById("caseSelector");
+    const prevCaseBtn = document.getElementById("prevCaseBtn");
+    const nextCaseBtn = document.getElementById("nextCaseBtn");
+    const badgeCaseNum = document.getElementById("badgeCaseNum");
+    const starRatingContainer = document.getElementById("starRatingContainer");
+    const activeCaseTitle = document.getElementById("activeCaseTitle");
+    const activeCaseDesc = document.getElementById("activeCaseDesc");
+    const targetExpectedText = document.getElementById("targetExpectedText");
+    const flowchartTreeRoot = document.getElementById("flowchartTreeRoot");
+
+    function initApplication() {
+      populateCaseDropdown();
+      loadCase(0);
+      setupPaletteDragAndDrop();
+      setupDomEventListeners();
+    }
+
+    function populateCaseDropdown() {
+      caseSelector.innerHTML = "";
+      CHALLENGES.forEach((item, idx) => {
+        const option = document.createElement("option");
+        option.value = idx;
+        option.textContent = item.shortName;
+        option.className = "bg-white text-slate-900 font-pixel";
+        caseSelector.appendChild(option);
+      });
+    }
+
+    function loadCase(idx) {
+      currentLevelIndex = idx;
+      caseSelector.value = idx;
+      const data = CHALLENGES[idx];
+
+      badgeCaseNum.textContent = data.id === "sandbox" ? "FREE MODE" : `STAGE ${idx + 1}`;
+      activeCaseTitle.textContent = data.title;
+      activeCaseDesc.textContent = data.desc;
+      targetExpectedText.textContent = data.expectedDisplay;
+
+      prevCaseBtn.disabled = (idx === 0);
+      nextCaseBtn.disabled = (idx === CHALLENGES.length - 1);
+
+      flowchartNodesTree = JSON.parse(JSON.stringify(data.initialFlow));
+
+      resetExecution();
+      renderFlowchartDiagram();
+      renderStars(0);
+    }
+
+    function renderStars(count) {
+      starRatingContainer.innerHTML = "";
+      for (let i = 1; i <= 3; i++) {
+        if (i <= count) {
+          starRatingContainer.innerHTML += '<i class="fa-solid fa-star text-amber-500"></i>';
+        } else {
+          starRatingContainer.innerHTML += '<i class="fa-regular fa-star text-slate-300"></i>';
+        }
+      }
+    }
+
+    /* ==========================================================================
+       5. BRIGHT RETRO ARCADE FLOWCHART RENDERING
+       ========================================================================== */
+    function renderFlowchartDiagram() {
+      flowchartTreeRoot.innerHTML = "";
+      renderNodeList(flowchartNodesTree, flowchartTreeRoot, { parentList: flowchartNodesTree });
+    }
+
+    function renderNodeList(list, container, context) {
+      list.forEach((node, idx) => {
+        const nodeCard = buildNodeCard(node, context, idx);
+        container.appendChild(nodeCard);
+
+        const isLast = (idx === list.length - 1);
+        if (!(node.type === "end" && isLast)) {
+          const connector = buildConnectorSlot(context.parentList, idx + 1);
+          container.appendChild(connector);
+        }
+      });
+    }
+
+    function renderBranchSequence(branchList, container) {
+      container.innerHTML = "";
+      if (branchList.length === 0) {
+        const emptySlot = buildConnectorSlot(branchList, 0, true);
+        container.appendChild(emptySlot);
+        return;
+      }
+      renderNodeList(branchList, container, { parentList: branchList });
+    }
+
+    function buildNodeCard(node, context, index) {
+      const cardWrap = document.createElement("div");
+      cardWrap.className = "relative flex flex-col items-center group/item transition-all duration-100";
+      cardWrap.id = `chart-node-${node.id}`;
+
+      let innerContent = "";
+
+      switch (node.type) {
+        case "start":
+          innerContent = `
+            <div class="px-6 py-2 bg-arcade-green border-3 border-arcade-ink text-arcade-ink font-pixel text-[10px] tracking-wider shadow-pixel flex items-center gap-2 uppercase font-extrabold">
+              <i class="fa-solid fa-play text-[9px]"></i>
+              <span>START</span>
+            </div>
+          `;
+          break;
+
+        case "end":
+          innerContent = `
+            <div class="px-6 py-2 bg-arcade-pink border-3 border-arcade-ink text-white font-pixel text-[10px] tracking-wider shadow-pixel flex items-center gap-2 uppercase font-extrabold">
+              <i class="fa-solid fa-stop text-[9px]"></i>
+              <span>END</span>
+            </div>
+          `;
+          break;
+
+        case "output":
+          innerContent = `
+            <div class="cursor-pointer px-5 py-2.5 bg-arcade-cyan border-3 border-arcade-ink text-arcade-ink font-mono text-xs shadow-pixel hover:shadow-pixel-lg transition transform hover:-translate-y-0.5 shape-io-parallelogram">
+              <div class="shape-io-content flex items-center gap-2">
+                <span class="font-pixel text-[8px] bg-arcade-ink text-arcade-cyan px-1 py-0.5">OUT</span>
+                <span class="font-mono text-xs text-arcade-ink font-bold max-w-[210px] truncate">${node.content ? escapeHtml(node.content) : '<span class="italic opacity-60">isi output...</span>'}</span>
+              </div>
+            </div>
+          `;
+          break;
+
+        case "input":
+          innerContent = `
+            <div class="cursor-pointer px-5 py-2.5 bg-arcade-purple border-3 border-arcade-ink text-white font-mono text-xs shadow-pixel hover:shadow-pixel-lg transition transform hover:-translate-y-0.5 shape-io-parallelogram">
+              <div class="shape-io-content flex items-center gap-2">
+                <span class="font-pixel text-[8px] bg-white text-arcade-purple px-1 py-0.5 font-bold">IN</span>
+                <span class="font-mono text-xs text-white font-bold max-w-[210px] truncate">${node.varName ? escapeHtml(node.varName) : '<span class="italic opacity-60">isi variabel...</span>'}</span>
+              </div>
+            </div>
+          `;
+          break;
+
+        case "process":
+          innerContent = `
+            <div class="cursor-pointer px-5 py-2.5 bg-arcade-yellow border-3 border-arcade-ink text-arcade-ink font-mono text-xs shadow-pixel hover:shadow-pixel-lg transition transform hover:-translate-y-0.5 flex items-center gap-2.5">
+              <div class="w-6 h-6 bg-white border border-arcade-ink text-arcade-ink flex items-center justify-center text-xs shadow-pixel-sm">
+                <i class="fa-solid fa-calculator"></i>
+              </div>
+              <div class="flex flex-col items-start">
+                <span class="font-pixel text-[8px] text-arcade-ink uppercase">PROCESS</span>
+                <span class="font-mono text-xs text-arcade-ink font-bold max-w-[220px] truncate">
+                  ${node.assignVar ? `${escapeHtml(node.assignVar)} = ${escapeHtml(node.expression || '0')}` : '<span class="italic opacity-60">tentukan nilai</span>'}
+                </span>
+              </div>
+            </div>
+          `;
+          break;
+
+        case "if":
+          innerContent = `
+            <div class="flex flex-col items-center">
+              <div class="cursor-pointer px-5 py-2 bg-arcade-pink border-3 border-arcade-ink text-white font-mono text-xs shadow-pixel hover:shadow-pixel-lg transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                <div class="w-6 h-6 bg-white border border-arcade-ink text-arcade-pink flex items-center justify-center text-xs shadow-pixel-sm">
+                  <i class="fa-solid fa-code-branch"></i>
+                </div>
+                <div class="flex flex-col items-start">
+                  <span class="font-pixel text-[8px] text-arcade-yellow uppercase font-bold">IF BRANCH</span>
+                  <span class="font-mono text-xs text-white font-bold max-w-[190px] truncate">${node.condition ? escapeHtml(node.condition) : 'Kondisi?'}</span>
+                </div>
+              </div>
+
+              <!-- Percabangan True & False Arcade Terang -->
+              <div class="flex gap-4 md:gap-5 mt-3 w-full justify-center relative pt-2.5">
+                <div class="absolute top-0 left-1/4 right-1/4 h-2 border-t-3 border-arcade-ink"></div>
+                <div class="absolute top-0 left-1/2 w-0.5 h-2 bg-arcade-ink -translate-x-1/2"></div>
+
+                <!-- True Branch (Emerald Pop) -->
+                <div class="flex flex-col items-center min-w-[170px] p-2.5 bg-emerald-50 border-2 border-arcade-ink shadow-pixel-sm">
+                  <span class="font-pixel text-[8px] bg-arcade-green text-arcade-ink px-2 py-0.5 border border-arcade-ink mb-2 shadow-pixel-sm uppercase font-bold">TRUE (YA)</span>
+                  <div class="branch-true w-full flex flex-col items-center" id="slot-true-${node.id}"></div>
+                </div>
+
+                <!-- False Branch (Rose Pop) -->
+                <div class="flex flex-col items-center min-w-[170px] p-2.5 bg-rose-50 border-2 border-arcade-ink shadow-pixel-sm">
+                  <span class="font-pixel text-[8px] bg-arcade-pink text-white px-2 py-0.5 border border-arcade-ink mb-2 shadow-pixel-sm uppercase font-bold">FALSE (NO)</span>
+                  <div class="branch-false w-full flex flex-col items-center" id="slot-false-${node.id}"></div>
+                </div>
+              </div>
+            </div>
+          `;
+          break;
+
+        case "while":
+          innerContent = `
+            <div class="flex flex-col items-center w-full">
+              <div class="cursor-pointer px-5 py-2 bg-emerald-400 border-3 border-arcade-ink text-arcade-ink font-mono text-xs shadow-pixel hover:shadow-pixel-lg transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                <div class="w-6 h-6 bg-white border border-arcade-ink text-arcade-ink flex items-center justify-center text-xs shadow-pixel-sm">
+                  <i class="fa-solid fa-repeat"></i>
+                </div>
+                <div class="flex flex-col items-start">
+                  <span class="font-pixel text-[8px] text-emerald-900 uppercase font-bold">WHILE LOOP</span>
+                  <span class="font-mono text-xs text-arcade-ink font-bold max-w-[190px] truncate">${node.condition ? escapeHtml(node.condition) : 'Kondisi?'}</span>
+                </div>
+              </div>
+
+              <!-- Loop Body Container Arcade -->
+              <div class="w-full max-w-[340px] mt-2.5 p-2.5 bg-emerald-50 border-3 border-dashed border-arcade-ink flex flex-col items-center shadow-pixel-sm">
+                <span class="font-pixel text-[8px] text-arcade-ink mb-2 flex items-center gap-1 uppercase font-bold">
+                  <i class="fa-solid fa-arrows-spin text-emerald-600"></i> LOOP BODY
+                </span>
+                <div class="w-full flex flex-col items-center" id="slot-loop-${node.id}"></div>
+              </div>
+            </div>
+          `;
+          break;
+      }
+
+      cardWrap.innerHTML = innerContent;
+
+      if (node.type === "if") {
+        const trueSlot = cardWrap.querySelector(`#slot-true-${node.id}`);
+        const falseSlot = cardWrap.querySelector(`#slot-false-${node.id}`);
+        if (!node.trueBranch) node.trueBranch = [];
+        if (!node.falseBranch) node.falseBranch = [];
+        renderBranchSequence(node.trueBranch, trueSlot);
+        renderBranchSequence(node.falseBranch, falseSlot);
+      } else if (node.type === "while") {
+        const loopSlot = cardWrap.querySelector(`#slot-loop-${node.id}`);
+        if (!node.body) node.body = [];
+        renderBranchSequence(node.body, loopSlot);
+      }
+
+      if (node.type !== "start" && node.type !== "end") {
+        const clickableTarget = cardWrap.firstElementChild;
+        clickableTarget.addEventListener("click", (e) => {
+          e.stopPropagation();
+          openNodeConfigModal(node, context.parentList);
+        });
+      }
+
+      return cardWrap;
+    }
+
+    function buildConnectorSlot(targetList, insertIndex, isInitialEmpty = false) {
+      const conn = document.createElement("div");
+      conn.className = "flex flex-col items-center my-0.5 group/slot relative";
+
+      conn.innerHTML = `
+        <div class="w-0.5 ${isInitialEmpty ? 'h-2' : 'h-4'} bg-arcade-ink relative flex items-center justify-center">
+          <div class="absolute -bottom-1 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[5px] border-t-arcade-ink"></div>
+        </div>
+
+        <button class="drop-plus-btn arcade-btn w-6 h-6 bg-arcade-yellow border-2 border-arcade-ink text-arcade-ink flex items-center justify-center text-xs font-bold shadow-pixel-sm hover:bg-white hover:scale-110 transition my-0.5 z-10"
+                title="Sisipkan Blok di Sini">
+          <i class="fa-solid fa-plus text-[10px]"></i>
+        </button>
+
+        <div class="w-0.5 h-2.5 bg-arcade-ink"></div>
+      `;
+
+      const plusBtn = conn.querySelector(".drop-plus-btn");
+
+      plusBtn.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        plusBtn.classList.add("bg-arcade-cyan", "scale-125");
+      });
+
+      plusBtn.addEventListener("dragleave", () => {
+        plusBtn.classList.remove("bg-arcade-cyan", "scale-125");
+      });
+
+      plusBtn.addEventListener("drop", (e) => {
+        e.preventDefault();
+        plusBtn.classList.remove("bg-arcade-cyan", "scale-125");
+        const blockType = e.dataTransfer.getData("text/plain");
+        if (blockType) {
+          createNewBlock(blockType, targetList, insertIndex);
+        }
+      });
+
+      plusBtn.addEventListener("click", () => {
+        createNewBlock("output", targetList, insertIndex);
+      });
+
+      return conn;
+    }
+
+    function createNewBlock(type, targetList, index) {
+      idNodeCounter++;
+      let newNode = {
+        id: "nd_" + idNodeCounter,
+        type: type
+      };
+
+      switch (type) {
+        case "output":
+          newNode.content = '"Halo Dunia!"';
+          break;
+        case "input":
+          newNode.varName = "nama";
+          break;
+        case "process":
+          newNode.assignVar = "x";
+          newNode.expression = "x + 1";
+          break;
+        case "if":
+          newNode.condition = "user == 'admin'";
+          newNode.trueBranch = [];
+          newNode.falseBranch = [];
+          break;
+        case "while":
+          newNode.condition = "angka <= 5";
+          newNode.body = [];
+          break;
+        default:
+          return;
+      }
+
+      targetList.splice(index, 0, newNode);
+      renderFlowchartDiagram();
+      openNodeConfigModal(newNode, targetList);
+    }
+
+    /* ==========================================================================
+       6. DRAG AND DROP HANDLERS DARI PALET
+       ========================================================================== */
+    function setupPaletteDragAndDrop() {
+      const draggables = document.querySelectorAll(".palette-draggable");
+      draggables.forEach(item => {
+        item.addEventListener("dragstart", (e) => {
+          const type = item.getAttribute("data-type");
+          e.dataTransfer.setData("text/plain", type);
+        });
+        
+        item.addEventListener("click", () => {
+          const type = item.getAttribute("data-type");
+          const endIdx = flowchartNodesTree.findIndex(n => n.type === "end");
+          const targetIndex = endIdx !== -1 ? endIdx : flowchartNodesTree.length;
+          createNewBlock(type, flowchartNodesTree, targetIndex);
+        });
+      });
+    }
+
+    /* ==========================================================================
+       7. MODAL EDIT PROPERTIES BLOK RETRO ARCADE TERANG
+       ========================================================================== */
+    const modalEditNode = document.getElementById("modalEditNode");
+    const modalInputsContainer = document.getElementById("modalInputsContainer");
+    const modalEditHeader = document.getElementById("modalEditHeader");
+    const modalEditTitle = document.getElementById("modalEditTitle");
+    const modalIconContainer = document.getElementById("modalIconContainer");
+    const modalTipNote = document.getElementById("modalTipNote");
+    const btnCancelEdit = document.getElementById("btnCancelEdit");
+    const btnCloseModal = document.getElementById("btnCloseModal");
+    const btnSaveNodeChanges = document.getElementById("btnSaveNodeChanges");
+    const btnDeleteCurrentNode = document.getElementById("btnDeleteCurrentNode");
+
+    function openNodeConfigModal(node, parentList) {
+      activeEditingNode = { node, parentList };
+      modalInputsContainer.innerHTML = "";
+
+      switch (node.type) {
+        case "output":
+          modalIconContainer.className = "w-6 h-6 bg-arcade-cyan border border-arcade-ink text-arcade-ink flex items-center justify-center font-bold text-xs shadow-pixel-sm";
+          modalIconContainer.innerHTML = '<i class="fa-solid fa-terminal text-[10px]"></i>';
+          modalEditTitle.textContent = "OUTPUT CONFIG";
+          modalInputsContainer.innerHTML = `
+            <div>
+              <label class="block font-pixel text-[8px] text-arcade-ink mb-1 uppercase font-bold">TEKS / VARIABEL OUTPUT:</label>
+              <input type="text" id="inputNodeOutput" class="w-full bg-white text-arcade-ink border-2 border-arcade-ink px-2.5 py-1.5 font-mono text-sm focus:outline-none focus:border-arcade-cyan shadow-pixel-sm" value="${escapeHtml(node.content || '')}">
+              <p class="font-crt text-base text-arcade-ink/80 mt-1">String wajib kutip dua: <code>"Lulus"</code>, <code>"Halo " + nama</code></p>
+            </div>
+          `;
+          modalTipNote.textContent = "Gunakan tanda kutip dua untuk teks string biasa.";
+          break;
+
+        case "input":
+          modalIconContainer.className = "w-6 h-6 bg-arcade-purple border border-arcade-ink text-white flex items-center justify-center font-bold text-xs shadow-pixel-sm";
+          modalIconContainer.innerHTML = '<i class="fa-solid fa-keyboard text-[10px]"></i>';
+          modalEditTitle.textContent = "INPUT CONFIG";
+          modalInputsContainer.innerHTML = `
+            <div>
+              <label class="block font-pixel text-[8px] text-arcade-ink mb-1 uppercase font-bold">NAMA VARIABEL:</label>
+              <input type="text" id="inputNodeVarName" class="w-full bg-white text-arcade-ink border-2 border-arcade-ink px-2.5 py-1.5 font-mono text-sm focus:outline-none focus:border-arcade-purple shadow-pixel-sm" value="${escapeHtml(node.varName || '')}" placeholder="nama, alas, pin">
+              <p class="font-crt text-base text-arcade-ink/80 mt-1">Hindari spasi untuk nama variabel.</p>
+            </div>
+          `;
+          modalTipNote.textContent = "Gunakan huruf kecil atau underscore untuk nama variabel.";
+          break;
+
+        case "process":
+          modalIconContainer.className = "w-6 h-6 bg-arcade-yellow border border-arcade-ink text-arcade-ink flex items-center justify-center font-bold text-xs shadow-pixel-sm";
+          modalIconContainer.innerHTML = '<i class="fa-solid fa-calculator text-[10px]"></i>';
+          modalEditTitle.textContent = "PROCESS CONFIG";
+          modalInputsContainer.innerHTML = `
+            <div class="grid grid-cols-3 gap-2">
+              <div class="col-span-1">
+                <label class="block font-pixel text-[8px] text-arcade-ink mb-1 uppercase font-bold">VAR:</label>
+                <input type="text" id="inputAssignTarget" class="w-full bg-white text-arcade-ink border-2 border-arcade-ink px-2 py-1.5 font-mono text-sm focus:outline-none focus:border-arcade-yellow shadow-pixel-sm" value="${escapeHtml(node.assignVar || '')}" placeholder="luas">
+              </div>
+              <div class="col-span-2">
+                <label class="block font-pixel text-[8px] text-arcade-ink mb-1 uppercase font-bold">EXPRESSION (=):</label>
+                <input type="text" id="inputAssignExpr" class="w-full bg-white text-arcade-ink border-2 border-arcade-ink px-2 py-1.5 font-mono text-sm focus:outline-none focus:border-arcade-yellow shadow-pixel-sm" value="${escapeHtml(node.expression || '')}" placeholder="(alas * tinggi) / 2">
+              </div>
+            </div>
+            <p class="font-crt text-base text-arcade-ink/80 mt-1">Operasi: <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code></p>
+          `;
+          modalTipNote.textContent = "Hasil ekspresi akan disimpan ke dalam variabel tujuan.";
+          break;
+
+        case "if":
+          modalIconContainer.className = "w-6 h-6 bg-arcade-pink border border-arcade-ink text-white flex items-center justify-center font-bold text-xs shadow-pixel-sm";
+          modalIconContainer.innerHTML = '<i class="fa-solid fa-code-branch text-[10px]"></i>';
+          modalEditTitle.textContent = "IF BRANCH CONFIG";
+          modalInputsContainer.innerHTML = `
+            <div>
+              <label class="block font-pixel text-[8px] text-arcade-ink mb-1 uppercase font-bold">KONDISI LOGIKA (BOOLEAN):</label>
+              <input type="text" id="inputIfCondition" class="w-full bg-white text-arcade-ink border-2 border-arcade-ink px-2.5 py-1.5 font-mono text-sm focus:outline-none focus:border-arcade-pink shadow-pixel-sm" value="${escapeHtml(node.condition || '')}" placeholder="nilai >= 75">
+              <p class="font-crt text-base text-arcade-ink/80 mt-1">Operator: <code>==</code>, <code>!=</code>, <code>&gt;=</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&lt;</code></p>
+            </div>
+          `;
+          modalTipNote.textContent = "Jika True, eksekusi masuk ke cabang hijau (TRUE).";
+          break;
+
+        case "while":
+          modalIconContainer.className = "w-6 h-6 bg-emerald-400 border border-arcade-ink text-arcade-ink flex items-center justify-center font-bold text-xs shadow-pixel-sm";
+          modalIconContainer.innerHTML = '<i class="fa-solid fa-repeat text-[10px]"></i>';
+          modalEditTitle.textContent = "WHILE LOOP CONFIG";
+          modalInputsContainer.innerHTML = `
+            <div>
+              <label class="block font-pixel text-[8px] text-arcade-ink mb-1 uppercase font-bold">KONDISI PERULANGAN:</label>
+              <input type="text" id="inputWhileCondition" class="w-full bg-white text-arcade-ink border-2 border-arcade-ink px-2.5 py-1.5 font-mono text-sm focus:outline-none focus:border-emerald-500 shadow-pixel-sm" value="${escapeHtml(node.condition || '')}" placeholder="angka <= 5">
+              <p class="font-crt text-base text-arcade-ink/80 mt-1">Loop akan berulang selama kondisi bernilai Benar.</p>
+            </div>
+          `;
+          modalTipNote.textContent = "Pastikan ada operasi penambahan counter di badan loop.";
+          break;
+      }
+
+      modalEditNode.classList.remove("hidden");
+      setTimeout(() => modalEditNode.classList.remove("opacity-0"), 10);
+    }
+
+    function closeNodeConfigModal() {
+      modalEditNode.classList.add("opacity-0");
+      setTimeout(() => {
+        modalEditNode.classList.add("hidden");
+        activeEditingNode = null;
+      }, 150);
+    }
+
+    function saveNodeConfig() {
+      if (!activeEditingNode) return;
+      const { node } = activeEditingNode;
+
+      switch (node.type) {
+        case "output":
+          node.content = document.getElementById("inputNodeOutput").value.trim();
+          break;
+        case "input":
+          node.varName = document.getElementById("inputNodeVarName").value.trim().replace(/\s+/g, '_');
+          break;
+        case "process":
+          node.assignVar = document.getElementById("inputAssignTarget").value.trim().replace(/\s+/g, '_');
+          node.expression = document.getElementById("inputAssignExpr").value.trim();
+          break;
+        case "if":
+          node.condition = document.getElementById("inputIfCondition").value.trim();
+          break;
+        case "while":
+          node.condition = document.getElementById("inputWhileCondition").value.trim();
+          break;
+      }
+
+      renderFlowchartDiagram();
+      closeNodeConfigModal();
+    }
+
+    function deleteActiveNode() {
+      if (!activeEditingNode) return;
+      const { node, parentList } = activeEditingNode;
+      const idx = parentList.indexOf(node);
+      if (idx !== -1) {
+        parentList.splice(idx, 1);
+        renderFlowchartDiagram();
+      }
+      closeNodeConfigModal();
+    }
+
+    /* ==========================================================================
+       8. RETRO INTERPRETER ENGINE
+       ========================================================================== */
+    const runtimeStatusBadge = document.getElementById("runtimeStatusBadge");
+    const consoleTerminalOutput = document.getElementById("consoleTerminalOutput");
+    const variablesTableBody = document.getElementById("variablesTableBody");
+    const varCountBadge = document.getElementById("varCountBadge");
+    const interactiveInputBox = document.getElementById("interactiveInputBox");
+    const inputPromptLabel = document.getElementById("inputPromptLabel");
+    const runtimeInputField = document.getElementById("runtimeInputField");
+    const submitRuntimeInputBtn = document.getElementById("submitRuntimeInputBtn");
+    const executionTempo = document.getElementById("executionTempo");
+
+    function resetExecution() {
+      stopSimulator();
+      memoryRAM = {};
+      terminalHistory = [];
+      updateVariableWatcherUI();
+      consoleTerminalOutput.innerHTML = `<div class="text-arcade-green/60 font-crt text-lg">// SISTEM SIAP. HASIL AKAN TERCETAK DI SINI...</div>`;
+      setRuntimeStatus("READY", "bg-arcade-cream text-arcade-ink border-arcade-ink", "bg-arcade-green");
+      clearNodeHighlights();
+    }
+
+    function setRuntimeStatus(text, badgeClasses, dotColor) {
+      runtimeStatusBadge.className = `inline-flex items-center gap-1 px-2 py-0.5 text-[8px] font-pixel border-2 shadow-pixel-sm ${badgeClasses}`;
+      runtimeStatusBadge.innerHTML = `<span class="w-2 h-2 ${dotColor} border border-arcade-ink inline-block animate-pulse"></span> ${text}`;
+    }
+
+    function appendTerminal(text, isError = false) {
+      terminalHistory.push(String(text));
+      if (consoleTerminalOutput.children.length === 1 && consoleTerminalOutput.children[0].textContent.includes("// SISTEM SIAP")) {
+        consoleTerminalOutput.innerHTML = "";
+      }
+      const line = document.createElement("div");
+      line.className = isError ? "text-arcade-pink font-bold" : "text-arcade-green";
+      line.textContent = `> ${text}`;
+      consoleTerminalOutput.appendChild(line);
+      consoleTerminalOutput.scrollTop = consoleTerminalOutput.scrollHeight;
+    }
+
+    function updateVariableWatcherUI() {
+      const keys = Object.keys(memoryRAM);
+      varCountBadge.textContent = `${keys.length} VAR`;
+
+      if (keys.length === 0) {
+        variablesTableBody.innerHTML = `<tr><td colspan="3" class="py-3 text-center text-arcade-ink/60 font-crt text-lg">RAM KOSONG</td></tr>`;
+        return;
+      }
+
+      variablesTableBody.innerHTML = "";
+      keys.forEach(k => {
+        const val = memoryRAM[k];
+        const valType = typeof val === "number" ? "NUM" : typeof val === "boolean" ? "BOOL" : "STR";
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-white/60";
+        tr.innerHTML = `
+          <td class="py-1 px-1 font-mono font-bold text-arcade-ink text-xs">${escapeHtml(k)}</td>
+          <td class="py-1 px-1 font-pixel text-[8px] text-arcade-purple">${valType}</td>
+          <td class="py-1 px-1 font-mono font-bold text-arcade-green truncate max-w-[90px] text-xs">${escapeHtml(String(val))}</td>
+        `;
+        variablesTableBody.appendChild(tr);
+      });
+    }
+
+    function clearNodeHighlights() {
+      document.querySelectorAll(".node-executing").forEach(el => {
+        el.classList.remove("node-executing");
+      });
+    }
+
+    function highlightActiveChartNode(nodeId) {
+      clearNodeHighlights();
+      const nodeEl = document.getElementById(`chart-node-${nodeId}`);
+      if (nodeEl && nodeEl.firstElementChild) {
+        nodeEl.firstElementChild.classList.add("node-executing");
+        nodeEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    }
+
+    function parseExpression(expr, mem) {
+      if (!expr || expr.trim() === "") return "";
+      let raw = expr.trim();
+
+      if ((raw.startsWith('"') && raw.endsWith('"')) || (raw.startsWith("'") && raw.endsWith("'"))) {
+        return raw.substring(1, raw.length - 1);
+      }
+
+      if (mem.hasOwnProperty(raw)) {
+        return mem[raw];
+      }
+
+      try {
+        const keys = Object.keys(mem);
+        const vals = Object.values(mem);
+        let sanitized = raw.replace(/(?<![=<>!])=(?![=])/g, "==");
+        const evalFn = new Function(...keys, `return (${sanitized});`);
+        return evalFn(...vals);
+      } catch (e) {
+        return raw.replace(/\b([a-zA-Z_]\w*)\b/g, (match) => {
+          return mem.hasOwnProperty(match) ? mem[match] : match;
+        });
+      }
+    }
+
+    async function* createExecutionPipeline(nodesList) {
+      for (const node of nodesList) {
+        if (!isExecuting) return;
+
+        yield { action: "step", node };
+
+        if (node.type === "output") {
+          const val = parseExpression(node.content, memoryRAM);
+          appendTerminal(String(val));
+        } else if (node.type === "input") {
+          setRuntimeStatus("WAIT INP", "bg-arcade-yellow text-arcade-ink border-arcade-ink", "bg-arcade-pink");
+          const inputVal = await promptForUserInput(node.varName || "input_var");
+          const parsed = (!isNaN(Number(inputVal)) && inputVal.trim() !== "") ? Number(inputVal) : inputVal;
+          memoryRAM[node.varName || "input_var"] = parsed;
+          updateVariableWatcherUI();
+          setRuntimeStatus("RUNNING", "bg-arcade-green text-arcade-ink border-arcade-ink", "bg-white");
+        } else if (node.type === "process") {
+          const res = parseExpression(node.expression, memoryRAM);
+          if (node.assignVar) {
+            memoryRAM[node.assignVar] = res;
+            updateVariableWatcherUI();
+          }
+        } else if (node.type === "if") {
+          const cond = Boolean(parseExpression(node.condition, memoryRAM));
+          if (cond) {
+            if (node.trueBranch && node.trueBranch.length > 0) {
+              yield* createExecutionPipeline(node.trueBranch);
+            }
+          } else {
+            if (node.falseBranch && node.falseBranch.length > 0) {
+              yield* createExecutionPipeline(node.falseBranch);
+            }
+          }
+        } else if (node.type === "while") {
+          let safetyIters = 0;
+          const MAX_ITERS = 250;
+          while (Boolean(parseExpression(node.condition, memoryRAM))) {
+            safetyIters++;
+            if (safetyIters > MAX_ITERS) {
+              appendTerminal("ERROR: INFINITE LOOP (> 250 SIKLUS)!", true);
+              break;
+            }
+            if (node.body && node.body.length > 0) {
+              yield* createExecutionPipeline(node.body);
+            }
+            yield { action: "step", node };
+          }
+        } else if (node.type === "end") {
+          return;
+        }
+      }
+    }
+
+    async function triggerRunFlow(stepMode = false) {
+      if (isExecuting && !isStepMode) return;
+
+      if (!isExecuting) {
+        resetExecution();
+        isExecuting = true;
+        isStepMode = stepMode;
+        runtimeIterator = createExecutionPipeline(flowchartNodesTree);
+        setRuntimeStatus("RUNNING", "bg-arcade-green text-arcade-ink border-arcade-ink", "bg-white");
+      }
+
+      if (stepMode) {
+        executeNextStep();
+      } else {
+        runFullAutomaticLoop();
+      }
+    }
+
+    async function runFullAutomaticLoop() {
+      const delayMs = parseInt(executionTempo.value, 10);
+      try {
+        while (isExecuting) {
+          const { value, done } = await runtimeIterator.next();
+          if (done) {
+            finishFlowExecution();
+            break;
+          }
+          if (value && value.node) {
+            highlightActiveChartNode(value.node.id);
+          }
+          await sleepDelay(delayMs);
+        }
+      } catch (err) {
+        appendTerminal("RUNTIME ERROR: " + err.message, true);
+        finishFlowExecution();
+      }
+    }
+
+    async function executeNextStep() {
+      if (!isExecuting || !runtimeIterator) return;
+      try {
+        const { value, done } = await runtimeIterator.next();
+        if (done) {
+          finishFlowExecution();
+          return;
+        }
+        if (value && value.node) {
+          highlightActiveChartNode(value.node.id);
+        }
+      } catch (err) {
+        appendTerminal("RUNTIME ERROR: " + err.message, true);
+        finishFlowExecution();
+      }
+    }
+
+    function stopSimulator() {
+      isExecuting = false;
+      isStepMode = false;
+      runtimeIterator = null;
+      if (inputPromiseResolver) {
+        inputPromiseResolver("");
+        inputPromiseResolver = null;
+      }
+      interactiveInputBox.classList.add("hidden");
+      setRuntimeStatus("STOPPED", "bg-arcade-pink text-white border-arcade-ink", "bg-arcade-yellow");
+      clearNodeHighlights();
+    }
+
+    function finishFlowExecution() {
+      isExecuting = false;
+      isStepMode = false;
+      runtimeIterator = null;
+      setRuntimeStatus("COMPLETE", "bg-arcade-cyan text-arcade-ink border-arcade-ink", "bg-white");
+      clearNodeHighlights();
+      evaluateChallengeSolution();
+    }
+
+    function updateProgressBadgeUI() {
+      const overallProgressText = document.getElementById("overallProgressText");
+      if (overallProgressText) {
+        overallProgressText.textContent = `${completedCaseIds.size}/9 MISI`;
+      }
+    }
+
+    function evaluateChallengeSolution() {
+      const activeData = CHALLENGES[currentLevelIndex];
+      if (activeData.id === "sandbox") return;
+
+      let isSuccess = false;
+      if (activeData.targetOutput) {
+        isSuccess = terminalHistory.some(line => line.trim().toLowerCase() === activeData.targetOutput.trim().toLowerCase());
+      } else if (activeData.targetCheck) {
+        isSuccess = activeData.targetCheck(terminalHistory, memoryRAM);
+      }
+
+      if (isSuccess) {
+        renderStars(3);
+        completedCaseIds.add(activeData.id);
+        updateProgressBadgeUI();
+
+        const allCompleted = ["case1", "case2", "case3", "case4", "case5", "case6", "case7", "case8", "case9"]
+          .every(id => completedCaseIds.has(id));
+
+        if (allCompleted) {
+          triggerGrandCompletionCelebration();
+          return;
+        }
+
+        confetti({
+          particleCount: 80,
+          spread: 80,
+          origin: { y: 0.6 }
+        });
+
+        document.getElementById("successPopupMsg").textContent = `Stage "${activeData.title}" tuntas! Algoritma kamu bekerja dengan sempurna.`;
+        const modal = document.getElementById("modalCaseSuccess");
+        modal.classList.remove("hidden");
+        setTimeout(() => modal.classList.remove("opacity-0"), 10);
+      }
+    }
+
+    function triggerGrandCompletionCelebration() {
+      const duration = 3.5 * 1000;
+      const animationEnd = Date.now() + duration;
+      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+
+      const interval = setInterval(function() {
+        const timeLeft = animationEnd - Date.now();
+        if (timeLeft <= 0) {
+          return clearInterval(interval);
+        }
+        const particleCount = 40 * (timeLeft / duration);
+        confetti(Object.assign({}, defaults, { particleCount, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
+      }, 250);
+
+      // Munculkan tombol Sertifikat pada Nav Bar
+      const navOpenCertBtn = document.getElementById("navOpenCertBtn");
+      if (navOpenCertBtn) {
+        navOpenCertBtn.classList.remove("hidden");
+        navOpenCertBtn.classList.add("flex");
+      }
+
+      const grandModal = document.getElementById("modalGrandCompletion");
+      grandModal.classList.remove("hidden");
+      setTimeout(() => grandModal.classList.remove("opacity-0"), 10);
+    }
+
+    function promptForUserInput(varName) {
+      return new Promise((resolve) => {
+        inputPromiseResolver = resolve;
+        interactiveInputBox.classList.remove("hidden");
+        inputPromptLabel.textContent = `MASUKKAN NILAI UNTUK '${varName}':`;
+        runtimeInputField.value = "";
+        runtimeInputField.focus();
+
+        const onSend = () => {
+          const val = runtimeInputField.value;
+          interactiveInputBox.classList.add("hidden");
+          submitRuntimeInputBtn.removeEventListener("click", onSend);
+          runtimeInputField.removeEventListener("keydown", onKey);
+          appendTerminal(`[INPUT: ${val}]`);
+          resolve(val);
+        };
+
+        const onKey = (e) => {
+          if (e.key === "Enter") onSend();
+        };
+
+        submitRuntimeInputBtn.addEventListener("click", onSend);
+        runtimeInputField.addEventListener("keydown", onKey);
+      });
+    }
+
+    function sleepDelay(ms) {
+      return new Promise(r => setTimeout(r, ms));
+    }
+
+    function escapeHtml(str) {
+      if (typeof str !== "string") return str;
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    /* ==========================================================================
+       9. EVENT LISTENERS
+       ========================================================================== */
+    function setupDomEventListeners() {
+      caseSelector.addEventListener("change", (e) => {
+        loadCase(parseInt(e.target.value, 10));
+      });
+      prevCaseBtn.addEventListener("click", () => {
+        if (currentLevelIndex > 0) loadCase(currentLevelIndex - 1);
+      });
+      nextCaseBtn.addEventListener("click", () => {
+        if (currentLevelIndex < CHALLENGES.length - 1) loadCase(currentLevelIndex + 1);
+      });
+      document.getElementById("resetDiagramBtn").addEventListener("click", () => {
+        loadCase(currentLevelIndex);
+      });
+
+      // Kontrol Eksekusi Simulator
+      document.getElementById("runFullBtn").addEventListener("click", () => triggerRunFlow(false));
+      document.getElementById("stepByStepBtn").addEventListener("click", () => {
+        if (!isExecuting) triggerRunFlow(true);
+        else executeNextStep();
+      });
+      document.getElementById("stopExecutionBtn").addEventListener("click", stopSimulator);
+      document.getElementById("clearConsoleBtn").addEventListener("click", () => {
+        terminalHistory = [];
+        consoleTerminalOutput.innerHTML = `<div class="text-arcade-green/60 font-crt text-lg">// TERMINAL CLS.</div>`;
+      });
+
+      // Audio BGM Sunda 8-bit
+      const audioToggleBtn = document.getElementById("audioToggleBtn");
+      const audioVolume = document.getElementById("audioVolume");
+      audioToggleBtn.addEventListener("click", () => {
+        if (!isMusicPlaying) {
+          startSundaMusic();
+        } else {
+          stopSundaMusic();
+        }
+      });
+      audioVolume.addEventListener("input", (e) => {
+        if (musicMasterGain && audioCtx) {
+          musicMasterGain.gain.setValueAtTime(parseFloat(e.target.value), audioCtx.currentTime);
+        }
+      });
+
+      // Zoom Kanvas
+      const canvasTransformWrapper = document.getElementById("canvasTransformWrapper");
+      const zoomPercent = document.getElementById("zoomPercent");
+      document.getElementById("zoomInBtn").addEventListener("click", () => {
+        if (canvasZoom < 1.4) {
+          canvasZoom += 0.1;
+          applyZoom();
+        }
+      });
+      document.getElementById("zoomOutBtn").addEventListener("click", () => {
+        if (canvasZoom > 0.6) {
+          canvasZoom -= 0.1;
+          applyZoom();
+        }
+      });
+      document.getElementById("zoomResetBtn").addEventListener("click", () => {
+        canvasZoom = 1;
+        applyZoom();
+      });
+
+      function applyZoom() {
+        canvasTransformWrapper.style.transform = `scale(${canvasZoom})`;
+        zoomPercent.textContent = `${Math.round(canvasZoom * 100)}%`;
+      }
+
+      // Modal Edit
+      btnCancelEdit.addEventListener("click", closeNodeConfigModal);
+      btnCloseModal.addEventListener("click", closeNodeConfigModal);
+      btnSaveNodeChanges.addEventListener("click", saveNodeConfig);
+      btnDeleteCurrentNode.addEventListener("click", deleteActiveNode);
+
+      // Modal Panduan (Hint)
+      const modalCaseHint = document.getElementById("modalCaseHint");
+      const openHintBtn = document.getElementById("openHintBtn");
+      const btnCloseHintModal = document.getElementById("btnCloseHintModal");
+      const btnDismissHint = document.getElementById("btnDismissHint");
+      const hintHeaderTitle = document.getElementById("hintHeaderTitle");
+      const hintMainDescription = document.getElementById("hintMainDescription");
+      const hintStepsBulletList = document.getElementById("hintStepsBulletList");
+      const hintLevelSubtitle = document.getElementById("hintLevelSubtitle");
+
+      openHintBtn.addEventListener("click", () => {
+        const cur = CHALLENGES[currentLevelIndex];
+        hintLevelSubtitle.textContent = cur.title;
+        hintHeaderTitle.textContent = "GUIDE: " + cur.shortName;
+        hintMainDescription.textContent = cur.desc;
+        hintStepsBulletList.innerHTML = cur.hintSteps.map(step => `<li>${step}</li>`).join("");
+        modalCaseHint.classList.remove("hidden");
+        setTimeout(() => modalCaseHint.classList.remove("opacity-0"), 10);
+      });
+      const hideHint = () => {
+        modalCaseHint.classList.add("opacity-0");
+        setTimeout(() => modalCaseHint.classList.add("hidden"), 150);
+      };
+      btnCloseHintModal.addEventListener("click", hideHint);
+      btnDismissHint.addEventListener("click", hideHint);
+
+      // Modal Sukses
+      const modalCaseSuccess = document.getElementById("modalCaseSuccess");
+      document.getElementById("btnStayOnCanvas").addEventListener("click", () => {
+        modalCaseSuccess.classList.add("opacity-0");
+        setTimeout(() => modalCaseSuccess.classList.add("hidden"), 150);
+      });
+      document.getElementById("btnNextLevelSuccess").addEventListener("click", () => {
+        modalCaseSuccess.classList.add("opacity-0");
+        setTimeout(() => {
+          modalCaseSuccess.classList.add("hidden");
+          if (currentLevelIndex < CHALLENGES.length - 1) {
+            loadCase(currentLevelIndex + 1);
+          }
+        }, 150);
+      });
+
+      // Modal Grand Celebration
+      const modalGrandCompletion = document.getElementById("modalGrandCompletion");
+      const hideGrandModal = () => {
+        modalGrandCompletion.classList.add("opacity-0");
+        setTimeout(() => modalGrandCompletion.classList.add("hidden"), 200);
+      };
+      const btnCloseGrandModal = document.getElementById("btnCloseGrandModal");
+      if (btnCloseGrandModal) btnCloseGrandModal.addEventListener("click", hideGrandModal);
+      const btnDismissGrand = document.getElementById("btnDismissGrandCelebration");
+      if (btnDismissGrand) btnDismissGrand.addEventListener("click", hideGrandModal);
+      const btnGoToSandbox = document.getElementById("btnGoToSandbox");
+      if (btnGoToSandbox) {
+        btnGoToSandbox.addEventListener("click", () => {
+          hideGrandModal();
+          const sandboxIdx = CHALLENGES.findIndex(c => c.id === "sandbox");
+          if (sandboxIdx !== -1) loadCase(sandboxIdx);
+        });
+      }
+
+      // Buka Sertifikat dari Tombol Grand Celebration atau Nav Bar
+      const modalClassicCertificate = document.getElementById("modalClassicCertificate");
+      const certRecipientInput = document.getElementById("certRecipientInput");
+      const certDisplayedName = document.getElementById("certDisplayedName");
+      const certIssuingDate = document.getElementById("certIssuingDate");
+      const navOpenCertBtn = document.getElementById("navOpenCertBtn");
+      const btnOpenCertFromGrand = document.getElementById("btnOpenCertFromGrand");
+      const btnCloseCertModal = document.getElementById("btnCloseCertModal");
+      const btnDismissCertModal = document.getElementById("btnDismissCertModal");
+      const btnDownloadCertPdf = document.getElementById("btnDownloadCertPdf");
+
+      const showCertificateModal = () => {
+        // Set tanggal hari ini secara otomatis
+        const today = new Date();
+        const dateOptions = { day: 'numeric', month: 'long', year: 'numeric' };
+        if (certIssuingDate) {
+          certIssuingDate.textContent = `Bandung, ${today.toLocaleDateString('id-ID', dateOptions)}`;
+        }
+
+        modalClassicCertificate.classList.remove("hidden");
+        setTimeout(() => modalClassicCertificate.classList.remove("opacity-0"), 10);
+      };
+
+      const hideCertificateModal = () => {
+        modalClassicCertificate.classList.add("opacity-0");
+        setTimeout(() => modalClassicCertificate.classList.add("hidden"), 200);
+      };
+
+      if (btnOpenCertFromGrand) {
+        btnOpenCertFromGrand.addEventListener("click", () => {
+          hideGrandModal();
+          showCertificateModal();
+        });
+      }
+
+      if (navOpenCertBtn) {
+        navOpenCertBtn.addEventListener("click", showCertificateModal);
+      }
+
+      if (btnCloseCertModal) btnCloseCertModal.addEventListener("click", hideCertificateModal);
+      if (btnDismissCertModal) btnDismissCertModal.addEventListener("click", hideCertificateModal);
+
+      // Reaktif: Update nama pada sertifikat secara real-time
+      if (certRecipientInput && certDisplayedName) {
+        certRecipientInput.addEventListener("input", (e) => {
+          const val = e.target.value.trim();
+          certDisplayedName.textContent = val.length > 0 ? val : "NAMA PESERTA";
+        });
+      }
+
+      // Download Sertifikat sebagai PDF Klasik Resolusi Tinggi
+      if (btnDownloadCertPdf) {
+        btnDownloadCertPdf.addEventListener("click", async () => {
+          const certArea = document.getElementById("classicCertificateRenderArea");
+          if (!certArea) return;
+
+          const originalText = btnDownloadCertPdf.innerHTML;
+          btnDownloadCertPdf.disabled = true;
+          btnDownloadCertPdf.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>MEMPROSES...</span>`;
+
+          try {
+            // Render elemen ke kanvas beresolusi tinggi (scale 2 untuk ketajaman cetak)
+            const canvas = await html2canvas(certArea, {
+              scale: 2,
+              useCORS: true,
+              logging: false,
+              backgroundColor: '#faf6eb'
+            });
+
+            const imgData = canvas.toDataURL("image/png");
+            const { jsPDF } = window.jspdf;
+            
+            // Format A4 Landscape (297mm x 210mm)
+            const pdf = new jsPDF({
+              orientation: "landscape",
+              unit: "mm",
+              format: "a4"
+            });
+
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+
+            pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pageHeight);
+
+            const safeName = (certRecipientInput.value.trim() || "Peserta").replace(/[^a-zA-Z0-9_\-]/g, "_");
+            pdf.save(`FlowCraft_Sertifikat_${safeName}.pdf`);
+          } catch (err) {
+            console.error("Gagal membuat PDF:", err);
+          } finally {
+            btnDownloadCertPdf.disabled = false;
+            btnDownloadCertPdf.innerHTML = originalText;
+          }
+        });
+      }
+
+      // Modal Kredit Logo Asli
+      const modalCreditsInfo = document.getElementById("modalCreditsInfo");
+      const openCreditsBtn = document.getElementById("openCreditsBtn");
+      const btnCloseCreditsModal = document.getElementById("btnCloseCreditsModal");
+      const btnDismissCredits = document.getElementById("btnDismissCredits");
+
+      openCreditsBtn.addEventListener("click", () => {
+        modalCreditsInfo.classList.remove("hidden");
+        setTimeout(() => modalCreditsInfo.classList.remove("opacity-0"), 10);
+      });
+      const hideCredits = () => {
+        modalCreditsInfo.classList.add("opacity-0");
+        setTimeout(() => modalCreditsInfo.classList.add("hidden"), 150);
+      };
+      btnCloseCreditsModal.addEventListener("click", hideCredits);
+      btnDismissCredits.addEventListener("click", hideCredits);
+    }
+
+    window.addEventListener("DOMContentLoaded", initApplication);
+  </script>
+
+</body></html>
